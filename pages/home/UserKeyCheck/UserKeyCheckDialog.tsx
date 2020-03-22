@@ -8,11 +8,25 @@ import { useUserKeyCheck } from './UserKeyCheck.hook'
 import { NewUserKeyForm } from './NewUserKeyForm'
 import { UserKeyDecrypt } from './UserKeyDecrypt'
 import { Fragment, useEffect } from 'react'
+import { SessionStoreName } from './constants'
 
 export const UserKeyCheckDialog = () => {
-  const { state, setState, getUserPubKey } = useUserKeyCheck()
+  const {
+    state,
+    setState,
+    getUserPubKey,
+    decryptPrivateKey,
+    close,
+  } = useUserKeyCheck()
 
   useEffect(() => {
+    let password = sessionStorage.getItem(SessionStoreName.PasswordKey)
+    if (password) {
+      decryptPrivateKey(password).then(() => {
+        close()
+      })
+      return
+    }
     if (state.hasPubKey !== null) {
       return
     }

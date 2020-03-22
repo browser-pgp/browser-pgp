@@ -63,6 +63,7 @@ export const useUserKeyCheck = () => {
             res.revocationCertificate,
           ),
         ])
+        await decryptPrivateKey(data.pass)
       })
       .then(
         () => {
