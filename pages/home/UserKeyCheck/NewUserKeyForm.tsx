@@ -20,9 +20,9 @@ export const NewUserKeyForm = () => {
   const { register, handleSubmit, control } = useForm<FormData>({
     defaultValues: {
       curve: CurveOptions[0].value,
-      email: 'a@a.com',
-      name: 'ssss',
-      pass: '123',
+      email: '',
+      name: '',
+      pass: '',
     },
   })
   return (
