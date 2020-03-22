@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core'
 import { useUserKeyCheck } from './UserKeyCheck.hook'
 import { NewUserKeyForm } from './NewUserKeyForm'
+import { UserKeyDecrypt } from './UserKeyDecrypt'
 import { Fragment, useEffect } from 'react'
 
 export const UserKeyCheckDialog = () => {
@@ -15,14 +16,7 @@ export const UserKeyCheckDialog = () => {
     if (state.hasPubKey !== null) {
       return
     }
-    getUserPubKey().then(() => {
-      setState(s => {
-        if (s.hasPubKey) {
-          setState(s => ({ ...s, open: false }))
-        }
-        return s
-      })
-    })
+    getUserPubKey()
   }, [state.hasPubKey])
 
   let body: JSX.Element
@@ -37,6 +31,8 @@ export const UserKeyCheckDialog = () => {
     )
   } else if (state.hasPubKey == false) {
     body = <NewUserKeyForm />
+  } else if (state.decryptedKey == false) {
+    body = <UserKeyDecrypt />
   } else {
     body = (
       <Fragment>

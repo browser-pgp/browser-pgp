@@ -5,6 +5,7 @@ const useUserKeyCheckState = () => {
     open: true,
     pending: false,
     hasPubKey: null as null | boolean,
+    decryptedKey: false,
   })
 }
 

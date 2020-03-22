@@ -1,8 +1,9 @@
 import { UserKeyCheckState } from './UserKeyCheck.state'
-import { StoreName } from '~libs/browser/constants'
+import { StoreName } from '~modules/openpgp/constants'
 import localforage from 'localforage'
 import openpgp from 'openpgp'
 import { useSnackbar } from 'notistack'
+import { getStoreKeys, useOpenPGP } from '~modules/openpgp'
 
 const CurveOption = (name: string) => ({ name, value: name })
 export const CurveOptions = [
@@ -28,12 +29,18 @@ export type FormData = {
 export const useUserKeyCheck = () => {
   const [state, setState] = UserKeyCheckState.useContainer()
   const { enqueueSnackbar } = useSnackbar()
+  const pgp = useOpenPGP()
 
   const close = () => {
     setState(s => ({ ...s, open: false }))
   }
 
   const importUserKey = () => {}
+
+  const decryptPrivateKey = async (pass: string) => {
+    await pgp.decryptPrivateKey(pass)
+    setState(s => ({ ...s, decryptedKey: true }))
+  }
 
   const genUserKey = async (data: FormData) => {
     if (state.pending) {
@@ -93,5 +100,6 @@ export const useUserKeyCheck = () => {
     close,
     getUserPubKey,
     genUserKey,
+    decryptPrivateKey,
   }
 }
