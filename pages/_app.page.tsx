@@ -5,7 +5,10 @@ import dynamic from 'next/dynamic'
 const Provider = dynamic(
   async () => {
     const mod = await import('./_provider')
-    await mod.init()
+    await mod.init().catch(err => {
+      console.error(err)
+      throw err
+    })
     return mod.default
   },
   {

@@ -13,7 +13,7 @@ export const Provider: StatelessComponent = props => (
         <OpenPGPState.Provider>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <UserKeyCheck>{props.children}</UserKeyCheck>
+          {props.children}
         </OpenPGPState.Provider>
       </UserKeyCheckState.Provider>
     </SnackbarProvider>

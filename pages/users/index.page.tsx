@@ -1,24 +1,32 @@
-import {} from 'react'
-import { Container } from '@material-ui/core'
-import { useFind } from 'react-pouchdb'
+import { Container, LinearProgress } from '@material-ui/core'
+import { myDatabase } from '~libs/db'
+import { useObservable } from 'rxjs-hooks'
+import { UserList } from './UserList'
 
 export const UsersPage = () => {
-  const docs = useFind({})
-  console.log('docs', docs)
+  const users = useObservable(() => myDatabase.users.find().$)
   return (
     <Container>
-      <ul>
-        <li></li>
-      </ul>
+      {users === null && <LinearProgress />}
+      <UserList users={users || []} />
     </Container>
   )
 }
 
-import { UsersState } from './users.state'
+import { AddUserState, AddUserDialog } from './AddUser'
+import { DelUserState, DelUserDialog } from './DelUser'
+import { KeyInfoState, KeyInfoDialog } from './KeyInfo'
 export default () => {
   return (
-    <UsersState.Provider>
-      <UsersPage />
-    </UsersState.Provider>
+    <AddUserState.Provider>
+      <DelUserState.Provider>
+        <KeyInfoState.Provider>
+          <AddUserDialog />
+          <DelUserDialog />
+          <KeyInfoDialog />
+          <UsersPage />
+        </KeyInfoState.Provider>
+      </DelUserState.Provider>
+    </AddUserState.Provider>
   )
 }
