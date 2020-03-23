@@ -2,6 +2,18 @@ import { useState } from 'react'
 import * as openpgp from 'openpgp'
 import { createContainer } from 'unstated-next'
 
+const useKeyInfoState = () => {
+  return useState({
+    open: false,
+    pubKey: '',
+    pending: true,
+    key: null as DisplayKeyInfo,
+    err: '',
+  })
+}
+
+export const KeyInfoState = createContainer(useKeyInfoState)
+
 export type DisplayKeyInfo = {
   userId: string
   keyId: string
@@ -27,14 +39,3 @@ export const toDisplayKeyInfo = async (
     expireAt,
   }
 }
-
-const useKeyInfoState = () => {
-  return useState({
-    open: false,
-    pubKey: '',
-    pending: true,
-    key: null as DisplayKeyInfo,
-  })
-}
-
-export const KeyInfoState = createContainer(useKeyInfoState)

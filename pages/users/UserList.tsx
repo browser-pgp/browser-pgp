@@ -2,11 +2,12 @@ import MUIDatatables from 'mui-datatables'
 import { Fragment } from 'react'
 import { createTableOptions, Col } from '~modules/utils/mui-table'
 import { PGPUserDucment } from '~modules/pgp-user'
-import { IconButton } from '@material-ui/core'
+import { IconButton, Button } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import { useAddUser } from './AddUser'
 import { DelUserBtn } from './DelUser'
 import { KeyInfoBtn } from './KeyInfo'
+import { useImportUser } from './ImportUser'
 
 const cols: Col<PGPUserDucment>[] = [
   new Col('称呼', item => {
@@ -29,11 +30,13 @@ const cols: Col<PGPUserDucment>[] = [
 
 const CustomToolbar = () => {
   const add = useAddUser()
+  const iu = useImportUser()
   return (
     <Fragment>
       <IconButton onClick={() => add.open()}>
         <AddIcon />
       </IconButton>
+      <Button onClick={() => iu.open()}>导入公钥</Button>
     </Fragment>
   )
 }

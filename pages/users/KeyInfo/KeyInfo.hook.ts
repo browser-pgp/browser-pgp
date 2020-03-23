@@ -5,7 +5,8 @@ export const useKeyInfo = () => {
   const [state, setState] = KeyInfoState.useContainer()
 
   const open = (pubKey: string) => {
-    setState(s => ({ ...s, pubKey, open: true, pending: pubKey !== s.pubKey }))
+    setState(s => ({ ...s, pubKey, open: true, pending: true }))
+    parsePubKey(pubKey)
   }
   const close = () => {
     setState(s => ({ ...s, open: false }))

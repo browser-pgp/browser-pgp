@@ -16,15 +16,19 @@ export const UsersPage = () => {
 import { AddUserState, AddUserDialog } from './AddUser'
 import { DelUserState, DelUserDialog } from './DelUser'
 import { KeyInfoState, KeyInfoDialog } from './KeyInfo'
+import { ImportUserState, ImportUserDialog } from './ImportUser'
 export default () => {
   return (
     <AddUserState.Provider>
       <DelUserState.Provider>
         <KeyInfoState.Provider>
-          <AddUserDialog />
-          <DelUserDialog />
-          <KeyInfoDialog />
-          <UsersPage />
+          <ImportUserState.Provider>
+            <AddUserDialog />
+            <DelUserDialog />
+            <KeyInfoDialog />
+            <ImportUserDialog />
+            <UsersPage />
+          </ImportUserState.Provider>
         </KeyInfoState.Provider>
       </DelUserState.Provider>
     </AddUserState.Provider>
