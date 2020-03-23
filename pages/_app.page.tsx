@@ -2,10 +2,17 @@ import React from 'react'
 import App from 'next/app'
 
 import dynamic from 'next/dynamic'
-const Provider = dynamic(() => import('./_provider'), {
-  ssr: false,
-  loading: () => <div>loading...</div>,
-})
+const Provider = dynamic(
+  async () => {
+    const mod = await import('./_provider')
+    await mod.init()
+    return mod.default
+  },
+  {
+    ssr: false,
+    loading: () => <div>loading...</div>,
+  },
+)
 
 class MyApp extends App {
   render() {

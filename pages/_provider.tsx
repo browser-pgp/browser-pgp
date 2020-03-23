@@ -21,3 +21,8 @@ export const Provider: StatelessComponent = props => (
 )
 
 export default Provider
+
+import { init as initDB } from '~libs/db'
+export async function init() {
+  await initDB()
+}
