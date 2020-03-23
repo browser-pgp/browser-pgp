@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "rxjs-hooks": "^0.6.2"
   }
 }
