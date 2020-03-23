@@ -18,11 +18,13 @@ type FormData = {
   remember: boolean
 }
 
+const defaultValues = {
+  remember: true,
+}
+
 export const UserKeyDecrypt = () => {
   const { register, handleSubmit } = useForm<FormData>({
-    defaultValues: {
-      remember: false,
-    },
+    defaultValues: defaultValues,
   })
   const [err, setErr] = useState('')
   const [pending, setPending] = useState<boolean>(false)
@@ -68,7 +70,12 @@ export const UserKeyDecrypt = () => {
         />
         <FormControlLabel
           control={
-            <Checkbox name="remember" inputRef={register} color="primary" />
+            <Checkbox
+              name="remember"
+              inputRef={register}
+              defaultChecked={defaultValues.remember}
+              color="primary"
+            />
           }
           label="本次会话中记住密码"
         />
