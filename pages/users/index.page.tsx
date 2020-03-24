@@ -2,14 +2,15 @@ import { Container, LinearProgress } from '@material-ui/core'
 import { myDatabase } from '~libs/db'
 import { useObservable } from 'rxjs-hooks'
 import { UserList } from './UserList'
+import { MainLayout } from "~pages/layouts";
 
 export const UsersPage = () => {
   const users = useObservable(() => myDatabase.users.find().$)
   return (
-    <Container>
+    <MainLayout>
       {users === null && <LinearProgress />}
       <UserList users={users || []} />
-    </Container>
+    </MainLayout>
   )
 }
 

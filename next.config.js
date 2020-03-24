@@ -3,8 +3,10 @@ const { envs } = require('./next.preset')
 
 const path = require('path')
 const alias = require('./tsconfig.alias').alias
+const MONACO_DIR = path.join(__dirname, './node_modules/monaco-editor')
+const withFonts = require('next-fonts')
 
-module.exports = {
+module.exports = withFonts({
   poweredByHeader: false,
   env: envs,
   pageExtensions: ['page.tsx', 'api.ts'],
@@ -14,7 +16,21 @@ module.exports = {
       let dir = alias[name]
       config.resolve.alias[name] = path.join(__dirname, dir)
     }
+    config.plugins = config.plugins || []
 
+    const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+    config.module.rules.push({
+      test: /\.css$/,
+      include: MONACO_DIR,
+      use: ['style-loader', 'css-loader'],
+    })
+    config.plugins.push(
+      new MonacoWebpackPlugin({
+        publicPath: '/monaco-editor',
+        filename: '../public/monaco-editor/[name].worker.[contenthash].js',
+        languages: [],
+      }),
+    )
     return config
   },
-}
+})

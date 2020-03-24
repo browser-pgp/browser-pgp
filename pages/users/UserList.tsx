@@ -17,6 +17,7 @@ const cols: Col<PGPUserDucment>[] = [
   new Col('属性', item => item.publicKey, {
     searchable: false,
     filter: false,
+    sort: false,
     customBodyRender: (pubKey: string) => {
       return <KeyInfoBtn pubKey={pubKey} />
     },
@@ -24,6 +25,7 @@ const cols: Col<PGPUserDucment>[] = [
   new Col('更多', item => item.get('_id'), {
     filter: false,
     searchable: false,
+    sort: false,
     customBodyRender: id => <DelUserBtn id={id} />,
   }),
 ]
