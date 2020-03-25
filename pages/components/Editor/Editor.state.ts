@@ -3,7 +3,6 @@ import * as monaco from 'monaco-editor'
 
 const useEditorState = () => {
   return useState({
-    model: null as monaco.editor.ITextModel,
     editor: null as monaco.editor.IStandaloneCodeEditor,
   })
 }
