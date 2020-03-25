@@ -2,7 +2,7 @@ import MUIDatatables from 'mui-datatables'
 import { Fragment } from 'react'
 import { createTableOptions, Col } from '~modules/utils/mui-table'
 import { PGPUserDucment } from '~modules/pgp-user'
-import { IconButton, Button } from '@material-ui/core'
+import { IconButton, Button, Checkbox } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import { useAddUser } from './AddUser'
 import { DelUserBtn } from './DelUser'
@@ -20,6 +20,14 @@ const cols: Col<PGPUserDucment>[] = [
     sort: false,
     customBodyRender: (pubKey: string) => {
       return <KeyInfoBtn pubKey={pubKey} />
+    },
+  }),
+  new Col('私钥', item => !!item.privateKey, {
+    searchable: false,
+    filter: false,
+    sort: false,
+    customBodyRender(havePrivateKey) {
+      return <Checkbox disabled color="primary" checked={havePrivateKey} />
     },
   }),
   new Col('更多', item => item.fingerprint, {
