@@ -18,6 +18,7 @@ export const useEditor = () => {
       wordWrap: 'on',
       ...options,
     })
+    editor.focus()
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
       // do nothing, just hook browser save
     })
