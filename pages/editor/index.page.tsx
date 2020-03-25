@@ -1,29 +1,81 @@
-import { useOpenPGP } from '~modules/openpgp'
-import { useState } from 'react'
-import { useHome } from './home.hook'
-import { useSnackbar } from 'notistack'
 import { MainLayout } from '~pages/layouts'
-import dynamic from 'next/dynamic'
 import { Editor } from '~pages/components/Editor'
+import { Button, Card, CardActions, CardContent } from '@material-ui/core'
+import { useEditor } from './editor.hook'
+
+import { makeStyles } from '@material-ui/core'
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: 0,
+    '&:last-child': {
+      paddingBottom: 0,
+    },
+    // paddingBottom: theme.spacing(3),
+  },
+  editor: {
+    height: '80vh',
+  },
+}))
 
 export const EditorPage = () => {
+  const classes = useStyles()
+  const { state, encrypt, decrypt } = useEditor()
+  const [{ editor }] = EditorState.useContainer()
+  const [input, setInput] = useState('')
+
+  useEffect(() => {
+    if (!editor) {
+      return
+    }
+    editor.updateOptions({
+      readOnly: state.pending,
+    })
+  }, [state.pending])
+
   return (
     <MainLayout>
-      <div style={{ height: '80vh' }}>
-        <Editor />
-      </div>
+      <Card>
+        <CardActions>
+          <Button
+            variant="outlined"
+            disabled={state.pending}
+            onClick={() => encrypt(input)}
+          >
+            加密
+          </Button>
+          <Button
+            variant="outlined"
+            disabled={state.pending}
+            onClick={() => decrypt(input)}
+          >
+            解密
+          </Button>
+        </CardActions>
+        <CardContent className={classes.root}>
+          <Editor classes={[classes.editor]} onChange={(e, v) => setInput(v)} />
+        </CardContent>
+      </Card>
     </MainLayout>
   )
 }
 
-import { HomeState } from './home.state'
+import { EditorState as EditorPageState } from './editor.state'
 import { EditorState } from '~pages/components/Editor'
+import { useEffect, useState } from 'react'
+import { KeysSelectState, KeysSelectDialog } from './KeysSelect'
+import { KeyPasswordAskState, KeyPasswordAskDialog } from './KeyPasswordAsk'
 export default () => {
   return (
-    <HomeState.Provider>
+    <EditorPageState.Provider>
       <EditorState.Provider>
-        <EditorPage />
+        <KeysSelectState.Provider>
+          <KeyPasswordAskState.Provider>
+            <KeysSelectDialog />
+            <KeyPasswordAskDialog />
+            <EditorPage />
+          </KeyPasswordAskState.Provider>
+        </KeysSelectState.Provider>
       </EditorState.Provider>
-    </HomeState.Provider>
+    </EditorPageState.Provider>
   )
 }

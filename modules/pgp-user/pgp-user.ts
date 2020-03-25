@@ -32,6 +32,7 @@ export const PGPUserSchema: RxJsonSchema<PGPUserDocType> = {
     },
     privateKey: {
       type: 'string',
+      default: '',
     },
     revocationCertificate: {
       type: 'string',
