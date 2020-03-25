@@ -22,7 +22,7 @@ const cols: Col<PGPUserDucment>[] = [
       return <KeyInfoBtn pubKey={pubKey} />
     },
   }),
-  new Col('更多', item => item.get('_id'), {
+  new Col('更多', item => item.fingerprint, {
     filter: false,
     searchable: false,
     sort: false,
