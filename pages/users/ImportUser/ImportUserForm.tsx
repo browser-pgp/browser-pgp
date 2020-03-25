@@ -28,23 +28,6 @@ const options: monaco.editor.IStandaloneEditorConstructionOptions = {
   fontSize: 14,
   minimap: { enabled: false },
 }
-const t = `
------BEGIN PGP PUBLIC KEY BLOCK-----
-Version: OpenPGP.js v4.10.1
-Comment: https://openpgpjs.org
-
-xjMEXnmCqBYJKwYBBAHaRw8BAQdABbtMCNbHXjWM+8k2IRzwht2Lyek4zBu9
-fus7SGDFy5/NG3NoeW5vbWUgPHNoeW5vbWVAZ2FtaWwuY29tPsJ4BBAWCgAg
-BQJeeYKoBgsJBwgDAgQVCAoCBBYCAQACGQECGwMCHgEACgkQ6RACh1yscRUy
-gQD7BL6zVmDdn/LgAoADjEKxNd4m02mwpfKCawQZp/St+wsBAJEmLf7zZWI9
-ORoOGdFpCY3E/BAjK4lmskkDN7cL81wAzjgEXnmCqBIKKwYBBAGXVQEFAQEH
-QJwv0spym2LTKG4ja7Zo63CjqvJCKSY9HS1RBoXWCtMaAwEIB8JhBBgWCAAJ
-BQJeeYKoAhsMAAoJEOkQAodcrHEVeocA+wQ2cJ33qm9bSKpWBespA2HhB0MG
-57koyBzqBUrWk4sNAQCQLx6/lpSWeOVsV5pBLmi4YiCBhdXq2BXK+Kk2bD5v
-Dg==
-=eoj6
------END PGP PUBLIC KEY BLOCK-----
-`
 
 export const ImportUserForm = () => {
   const keyInfo = useKeyInfo()
