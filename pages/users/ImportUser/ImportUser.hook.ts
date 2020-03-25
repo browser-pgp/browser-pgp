@@ -27,13 +27,11 @@ export const useImportUser = () => {
           throw err[0]
         }
         let fingerprint = key.getFingerprint()
-        console.log(fingerprint)
         let u = await myDatabase.users
           .findOne()
           .where('fingerprint')
           .eq(fingerprint)
-          .$.toPromise()
-        console.log(u)
+          .exec()
         if (u) {
           throw new Error('公钥已存在')
         }
