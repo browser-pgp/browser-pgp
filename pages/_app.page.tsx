@@ -1,5 +1,6 @@
 import React from 'react'
 import App from 'next/app'
+import DynamicLoading from '~pages/components/DynamicLoading'
 
 import dynamic from 'next/dynamic'
 const Provider = dynamic(
@@ -13,7 +14,7 @@ const Provider = dynamic(
   },
   {
     ssr: false,
-    loading: () => <div>loading...</div>,
+    loading: DynamicLoading,
   },
 )
 
