@@ -1,17 +1,6 @@
 import { EditorState } from './Editor.state'
-const monaco = process.browser
-  ? (require('monaco-editor') as typeof import('monaco-editor'))
-  : null
+import monaco from './MonacoEditor'
 
-if (process.browser) {
-  let originGetWorkerUrl = self['MonacoEnvironment'].getWorkerUrl
-  self['MonacoEnvironment'].getWorkerUrl = function(...r) {
-    let f: string = originGetWorkerUrl(...r)
-    f = f.replace('../public/monaco-editor', '')
-    console.log(f)
-    return f
-  }
-}
 export const useEditor = () => {
   const [state, setState] = EditorState.useContainer()
   const init = (ref: HTMLElement) => {
