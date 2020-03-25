@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const useImportUserState = () => {
   return useState({
-    open: false,
+    open: true,
     pending: false,
   })
 }

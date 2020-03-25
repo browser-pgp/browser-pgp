@@ -20,6 +20,7 @@ export type DisplayKeyInfo = {
   comment: string
   createAt: string
   expireAt: string
+  fingerprint: string
 }
 export const toDisplayKeyInfo = async (
   key: openpgp.key.Key,
@@ -37,5 +38,6 @@ export const toDisplayKeyInfo = async (
     comment,
     createAt,
     expireAt,
+    fingerprint: key.primaryKey.getFingerprint()
   }
 }

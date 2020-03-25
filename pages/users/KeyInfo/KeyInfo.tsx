@@ -1,22 +1,36 @@
-import * as openpgp from 'openpgp'
 import { Table, TableBody, TableRow, TableCell } from '@material-ui/core'
 import { DisplayKeyInfo } from './KeyInfo.state'
+import { util } from 'openpgp'
+
+import { makeStyles } from '@material-ui/core'
+const useStyles = makeStyles(theme => ({
+  keyId: {
+    textTransform: 'uppercase',
+  },
+  fingerprint: {
+    textTransform: 'uppercase',
+  },
+}))
 
 export const KeyInfo = ({ data }: { data: DisplayKeyInfo }) => {
+  const classes = useStyles()
+  const { name = '', email = '', comment = '' } = util.parseUserId(data.userId)
   return (
     <Table>
       <TableBody>
         <TableRow>
-          <TableCell>用户</TableCell>
-          <TableCell>{data.userId}</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>密钥ID</TableCell>
-          <TableCell>{data.keyId}</TableCell>
+          <TableCell>用户ID</TableCell>
+          <TableCell>
+            {util.formatUserId({ name, email, comment: '' })}
+          </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>注释</TableCell>
-          <TableCell>{data.comment}</TableCell>
+          <TableCell>{comment}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>密钥ID</TableCell>
+          <TableCell className={classes.keyId}>{data.keyId}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>创建时间</TableCell>
@@ -25,6 +39,12 @@ export const KeyInfo = ({ data }: { data: DisplayKeyInfo }) => {
         <TableRow>
           <TableCell>过期时间</TableCell>
           <TableCell>{data.expireAt}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>指纹</TableCell>
+          <TableCell className={classes.fingerprint}>
+            {data.fingerprint}
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>

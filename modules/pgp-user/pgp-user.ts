@@ -3,6 +3,7 @@ export type PGPUserDocType = {
   name?: string
   email?: string
   publicKey: string
+  fingerprint: string
   privateKey?: string
   revocationCertificate?: string
 }
@@ -16,12 +17,18 @@ export const PGPUserSchema: RxJsonSchema<PGPUserDocType> = {
   properties: {
     name: {
       type: 'string',
+      default: '',
     },
     email: {
       type: 'string',
+      default: '',
     },
     publicKey: {
       type: 'string',
+    },
+    fingerprint: {
+      type: 'string',
+      primary: true,
     },
     privateKey: {
       type: 'string',
@@ -30,7 +37,7 @@ export const PGPUserSchema: RxJsonSchema<PGPUserDocType> = {
       type: 'string',
     },
   },
-  required: ['publicKey'],
+  required: ['publicKey', 'fingerprint'],
 }
 
 export type PGPUserCollection = RxCollection<PGPUserDocType>

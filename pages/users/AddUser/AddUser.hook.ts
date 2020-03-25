@@ -50,9 +50,10 @@ export const useAddUser = () => {
             : { curve: data.curve }),
         })
         await myDatabase.users.insert({
+          publicKey: res.publicKeyArmored,
+          fingerprint: res.key.toPublic().getFingerprint(),
           name: data.name,
           email: data.email,
-          publicKey: res.publicKeyArmored,
           privateKey: res.privateKeyArmored,
           revocationCertificate: res.revocationCertificate,
         })
