@@ -20,6 +20,7 @@
   "devDependencies": {
     "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.46",
     "@types/dotenv": "^8.2.0",
     "@types/mui-datatables": "^2.13.4",
     "@types/node": "^13.9.2",

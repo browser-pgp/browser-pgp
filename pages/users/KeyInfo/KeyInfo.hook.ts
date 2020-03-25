@@ -5,8 +5,15 @@ export const useKeyInfo = () => {
   const [state, setState] = KeyInfoState.useContainer()
 
   const open = (pubKey: string) => {
-    setState(s => ({ ...s, pubKey, open: true, pending: true }))
-    parsePubKey(pubKey)
+    setState(s => ({ ...s, pubKey, open: true, pending: true, err: '' }))
+    parsePubKey(pubKey).catch(err => {
+      err = err?.[0] || err
+      setState(s => ({
+        ...s,
+        err: err.message,
+        pending: false,
+      }))
+    })
   }
   const close = () => {
     setState(s => ({ ...s, open: false }))
