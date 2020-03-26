@@ -1,6 +1,12 @@
 import { MainLayout } from '~pages/layouts'
 import { Editor } from '~pages/components/Editor'
-import { Button, Card, CardActions, CardContent } from '@material-ui/core'
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  LinearProgress,
+} from '@material-ui/core'
 import { useEditor } from './editor.hook'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { useSnackbar } from 'notistack'
@@ -95,6 +101,7 @@ export const EditorPage = () => {
             查看签名
           </Button>
         </CardActions>
+        <LinearProgress style={state.pending ? {} : { visibility: 'hidden' }} />
         <CardContent className={classes.root}>
           <Editor classes={[classes.editor]} onChange={(e, v) => setInput(v)} />
         </CardContent>

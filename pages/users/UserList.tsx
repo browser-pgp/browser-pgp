@@ -22,12 +22,17 @@ const cols: Col<PGPUserDucment>[] = [
       return <KeyInfoBtn pubKey={pubKey} />
     },
   }),
-  new Col('私钥', item => !!item.privateKey, {
+  new Col('私钥', item => (item.privateKey ? '有私钥' : '无私钥'), {
     searchable: false,
-    filter: false,
     sort: false,
     customBodyRender(havePrivateKey) {
-      return <Checkbox disabled color="primary" checked={havePrivateKey} />
+      return (
+        <Checkbox
+          disabled
+          color="primary"
+          checked={havePrivateKey === '有私钥'}
+        />
+      )
     },
   }),
   new Col('更多', item => item.fingerprint, {
