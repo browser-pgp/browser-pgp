@@ -15,7 +15,7 @@ export const KeyPasswordAskDialog = () => {
   return (
     <Dialog
       open={state.open}
-      onClose={state.pending ? () => 0 : close}
+      onClose={state.pending ? () => 0 : () => close()}
       fullWidth
       maxWidth="xs"
     >

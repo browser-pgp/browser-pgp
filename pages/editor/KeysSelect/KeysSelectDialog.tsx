@@ -6,7 +6,7 @@ export const KeysSelectDialog = () => {
   const { state, close } = useKeysSelect()
 
   return (
-    <Dialog open={state.open} fullWidth maxWidth="md" onClose={close}>
+    <Dialog open={state.open} fullWidth maxWidth="md" onClose={() => close()}>
       <KeysSelect keyType={state.keyType} />
     </Dialog>
   )
