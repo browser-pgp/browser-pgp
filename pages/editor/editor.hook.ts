@@ -87,7 +87,7 @@ export const useEditor = () => {
         let privateKey = await getUserPrivateKey(user)
 
         const { data } = await openpgp.sign({
-          message: openpgp.message.fromText(msg),
+          message: openpgp.cleartext.fromText(msg),
           privateKeys: [privateKey],
         })
         editor.getModel().setValue(data as string)
@@ -114,7 +114,7 @@ export const useEditor = () => {
           }),
         )
         let { data, signatures } = await openpgp.verify({
-          message: await openpgp.message.readArmored(msg),
+          message: await openpgp.cleartext.readArmored(msg),
           publicKeys: keys,
         })
         let u: PGPUserDocType
@@ -129,11 +129,8 @@ export const useEditor = () => {
           }
         }
         keyInfo.open(u.publicKey)
-        // editor
-        //   .getModel()
-        //   .setValue(String.fromCharCode.apply(null, data as Uint8Array))
       })
-      .then(verifyStepNotice[0])
+      .catch(verifyStepNotice[1])
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })

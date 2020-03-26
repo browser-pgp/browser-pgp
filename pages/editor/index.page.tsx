@@ -2,6 +2,8 @@ import { MainLayout } from '~pages/layouts'
 import { Editor } from '~pages/components/Editor'
 import { Button, Card, CardActions, CardContent } from '@material-ui/core'
 import { useEditor } from './editor.hook'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { useSnackbar } from 'notistack'
 
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
@@ -21,6 +23,7 @@ export const EditorPage = () => {
   const classes = useStyles()
   const { state, encrypt, decrypt, sign, verify } = useEditor()
   const [{ editor }] = EditorState.useContainer()
+  const { enqueueSnackbar } = useSnackbar()
   const [input, setInput] = useState('')
 
   useEffect(() => {
@@ -36,6 +39,12 @@ export const EditorPage = () => {
     <MainLayout>
       <Card>
         <CardActions>
+          <CopyToClipboard
+            text={input}
+            onCopy={() => enqueueSnackbar('复制成功')}
+          >
+            <Button variant="outlined">复制</Button>
+          </CopyToClipboard>
           <Button
             variant="outlined"
             disabled={state.pending}
@@ -62,7 +71,7 @@ export const EditorPage = () => {
             disabled={state.pending}
             onClick={() => verify(input)}
           >
-            查看签名信息
+            查看签名
           </Button>
         </CardActions>
         <CardContent className={classes.root}>
