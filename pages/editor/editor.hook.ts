@@ -124,7 +124,7 @@ export const useEditor = () => {
             return key.getKeys(keyid).length > 0
           })
           if (verifyed) {
-            u = users[0]
+            u = users[i]
             break
           }
         }
