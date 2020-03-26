@@ -3,19 +3,13 @@ import { SnackbarProvider } from 'notistack'
 import { CssBaseline } from '@material-ui/core'
 import { theme } from './_theme'
 import { StatelessComponent } from 'react'
-import { UserKeyCheckState, UserKeyCheck } from './home/UserKeyCheck'
-import { OpenPGPState } from '~modules/openpgp'
 
 export const Provider: StatelessComponent = props => (
   <ThemeProvider theme={theme}>
     <SnackbarProvider autoHideDuration={2e3}>
-      <UserKeyCheckState.Provider>
-        <OpenPGPState.Provider>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          {props.children}
-        </OpenPGPState.Provider>
-      </UserKeyCheckState.Provider>
+      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+      <CssBaseline />
+      {props.children}
     </SnackbarProvider>
   </ThemeProvider>
 )
