@@ -117,21 +117,23 @@ export const useEditor = () => {
           message: await openpgp.message.readArmored(msg),
           publicKeys: keys,
         })
-        let keyid = signatures[0].keyid
         let u: PGPUserDocType
         for (let i = 0; i < keys.length; i++) {
           let key = keys[i]
-          if (key.getKeys(keyid).length > 0) {
+          let verifyed = signatures.some(({ keyid }) => {
+            return key.getKeys(keyid).length > 0
+          })
+          if (verifyed) {
             u = users[0]
             break
           }
         }
         keyInfo.open(u.publicKey)
-        editor
-          .getModel()
-          .setValue(String.fromCharCode.apply(null, data as Uint8Array))
+        // editor
+        //   .getModel()
+        //   .setValue(String.fromCharCode.apply(null, data as Uint8Array))
       })
-      .then(...verifyStepNotice)
+      .then(verifyStepNotice[0])
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
