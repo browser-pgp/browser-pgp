@@ -3,13 +3,19 @@ import { SnackbarProvider } from 'notistack'
 import { CssBaseline } from '@material-ui/core'
 import { theme } from './_theme'
 import { StatelessComponent } from 'react'
+import { KeyPasswordAskProvider } from './users/KeyPasswordAsk'
+import { PrivateKeyCacheState } from './users/PrivateKeyCache'
 
 export const Provider: StatelessComponent = props => (
   <ThemeProvider theme={theme}>
+    <CssBaseline />
     <SnackbarProvider autoHideDuration={2e3}>
-      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-      <CssBaseline />
-      {props.children}
+      <KeyPasswordAskProvider>
+        <PrivateKeyCacheState.Provider>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          {props.children}
+        </PrivateKeyCacheState.Provider>
+      </KeyPasswordAskProvider>
     </SnackbarProvider>
   </ThemeProvider>
 )

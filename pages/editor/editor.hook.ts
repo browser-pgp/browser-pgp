@@ -5,7 +5,7 @@ import * as openpgp from 'openpgp'
 import { EditorState as EditorComponentState } from '~pages/components/Editor'
 import { myDatabase } from '~libs/db'
 import { PGPUserDocType } from '~modules/pgp-user'
-import { usePrivateKeyCache } from './PrivateKeyCache'
+import { usePrivateKeyCache } from '~pages/users/PrivateKeyCache'
 import { useKeyInfo } from '~pages/users/KeyInfo'
 
 const cache: { [k: string]: openpgp.key.Key } = {}

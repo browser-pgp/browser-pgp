@@ -85,26 +85,17 @@ export const EditorPage = () => {
 import { EditorState as EditorPageState } from './editor.state'
 import { EditorState } from '~pages/components/Editor'
 import { useEffect, useState } from 'react'
-import { KeysSelectState, KeysSelectDialog } from './KeysSelect'
-import { KeyPasswordAskState, KeyPasswordAskDialog } from './KeyPasswordAsk'
-import { KeyInfoState, KeyInfoDialog } from '~pages/users/KeyInfo'
-import { PrivateKeyCacheState } from './PrivateKeyCache'
+import { KeysSelectProvider } from './KeysSelect'
+import { KeyInfoProvider } from '~pages/users/KeyInfo'
 export default () => {
   return (
     <EditorPageState.Provider>
       <EditorState.Provider>
-        <KeysSelectState.Provider>
-          <KeyPasswordAskState.Provider>
-            <PrivateKeyCacheState.Provider>
-              <KeyInfoState.Provider>
-                <KeysSelectDialog />
-                <KeyPasswordAskDialog />
-                <KeyInfoDialog />
-                <EditorPage />
-              </KeyInfoState.Provider>
-            </PrivateKeyCacheState.Provider>
-          </KeyPasswordAskState.Provider>
-        </KeysSelectState.Provider>
+        <KeysSelectProvider>
+          <KeyInfoProvider>
+            <EditorPage />
+          </KeyInfoProvider>
+        </KeysSelectProvider>
       </EditorState.Provider>
     </EditorPageState.Provider>
   )
