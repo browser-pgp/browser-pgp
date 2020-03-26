@@ -75,62 +75,91 @@ export const useEditor = () => {
   }
 
   const signStepNotice = useStepNotification('签名')
-  const sign = (msg: string) => {
+  const sign = (msg: string, noLock = false) => {
     if (state.pending) {
       return
     }
-    return Promise.resolve(setState(s => ({ ...s, pending: true })))
-      .then(async () => {
-        let users = await ks.open(KeyType.Private)
-        let user = users[0]
+    const fn = async () => {
+      let [user] = await ks.open(KeyType.Private)
+      if (!user) {
+        throw new Error('未选择密钥')
+      }
 
-        let privateKey = await getUserPrivateKey(user)
+      let privateKey = await getUserPrivateKey(user)
 
-        const { data } = await openpgp.sign({
-          message: openpgp.cleartext.fromText(msg),
-          privateKeys: [privateKey],
-        })
-        editor.getModel().setValue(data as string)
+      const { data } = await openpgp.sign({
+        message: openpgp.cleartext.fromText(msg),
+        privateKeys: [privateKey],
       })
+      editor.getModel().setValue(data as string)
+    }
+    if (noLock) {
+      return fn()
+    }
+    return Promise.resolve(setState(s => ({ ...s, pending: true })))
+      .then(fn)
       .then(...signStepNotice)
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
   }
   const verifyStepNotice = useStepNotification('确认签名')
-  const verify = (msg: string) => {
+  const verify = (msg: string, noLock = false) => {
+    if (state.pending) {
+      return
+    }
+    const fn = async () => {
+      const users = await myDatabase.users.find().exec()
+      const keys = await Promise.all(
+        users.map(async u => {
+          const {
+            keys: [publicKey],
+          } = await openpgp.key.readArmored(u.publicKey)
+          return publicKey
+        }),
+      )
+      let { data, signatures } = await openpgp.verify({
+        message: await openpgp.cleartext.readArmored(msg),
+        publicKeys: keys,
+      })
+      let u: PGPUserDocType
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i]
+        let verifyed = signatures.some(({ keyid }) => {
+          return key.getKeys(keyid).length > 0
+        })
+        if (verifyed) {
+          u = users[i]
+          break
+        }
+      }
+      keyInfo.open(u.publicKey)
+    }
+    if (noLock) {
+      return fn()
+    }
+    return Promise.resolve(setState(s => ({ ...s, pending: true })))
+      .then(fn)
+      .catch(verifyStepNotice[1])
+      .finally(() => {
+        setState(s => ({ ...s, pending: false }))
+      })
+  }
+
+  const signOrVerify = (msg: string) => {
     if (state.pending) {
       return
     }
     return Promise.resolve(setState(s => ({ ...s, pending: true })))
       .then(async () => {
-        const users = await myDatabase.users.find().exec()
-        const keys = await Promise.all(
-          users.map(async u => {
-            const {
-              keys: [publicKey],
-            } = await openpgp.key.readArmored(u.publicKey)
-            return publicKey
-          }),
-        )
-        let { data, signatures } = await openpgp.verify({
-          message: await openpgp.cleartext.readArmored(msg),
-          publicKeys: keys,
-        })
-        let u: PGPUserDocType
-        for (let i = 0; i < keys.length; i++) {
-          let key = keys[i]
-          let verifyed = signatures.some(({ keyid }) => {
-            return key.getKeys(keyid).length > 0
-          })
-          if (verifyed) {
-            u = users[i]
-            break
-          }
+        try {
+          // await required
+          await openpgp.cleartext.fromText(msg)
+          await verify(msg, true)
+        } catch (err) {
+          await sign(msg, true)
         }
-        keyInfo.open(u.publicKey)
       })
-      .catch(verifyStepNotice[1])
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
@@ -142,5 +171,6 @@ export const useEditor = () => {
     decrypt,
     sign,
     verify,
+    signOrVerify,
   }
 }

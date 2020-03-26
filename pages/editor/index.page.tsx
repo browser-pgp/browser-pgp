@@ -4,6 +4,10 @@ import { Button, Card, CardActions, CardContent } from '@material-ui/core'
 import { useEditor } from './editor.hook'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { useSnackbar } from 'notistack'
+import LockIcon from '@material-ui/icons/Lock'
+import LockOpenIcon from '@material-ui/icons/LockOpen'
+import EditIcon from '@material-ui/icons/Edit'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
 
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
@@ -17,11 +21,14 @@ const useStyles = makeStyles(theme => ({
   editor: {
     height: '80vh',
   },
+  hidden: {
+    display: 'none',
+  },
 }))
 
 export const EditorPage = () => {
   const classes = useStyles()
-  const { state, encrypt, decrypt, sign, verify } = useEditor()
+  const { state, encrypt, decrypt, sign, verify, signOrVerify } = useEditor()
   const [{ editor }] = EditorState.useContainer()
   const { enqueueSnackbar } = useSnackbar()
   const [input, setInput] = useState('')
@@ -43,12 +50,23 @@ export const EditorPage = () => {
             text={input}
             onCopy={() => enqueueSnackbar('复制成功')}
           >
-            <Button variant="outlined">复制</Button>
+            <Button variant="outlined" startIcon={<FileCopyIcon />}>
+              复制
+            </Button>
           </CopyToClipboard>
           <Button
             variant="outlined"
             disabled={state.pending}
+            onClick={() => signOrVerify(input)}
+            startIcon={<EditIcon />}
+          >
+            签名/核对
+          </Button>
+          <Button
+            variant="outlined"
+            disabled={state.pending}
             onClick={() => encrypt(input)}
+            startIcon={<LockIcon />}
           >
             加密
           </Button>
@@ -56,6 +74,7 @@ export const EditorPage = () => {
             variant="outlined"
             disabled={state.pending}
             onClick={() => decrypt(input)}
+            startIcon={<LockOpenIcon />}
           >
             解密
           </Button>
@@ -63,6 +82,7 @@ export const EditorPage = () => {
             variant="outlined"
             disabled={state.pending}
             onClick={() => sign(input)}
+            className={classes.hidden}
           >
             签名
           </Button>
@@ -70,6 +90,7 @@ export const EditorPage = () => {
             variant="outlined"
             disabled={state.pending}
             onClick={() => verify(input)}
+            className={classes.hidden}
           >
             查看签名
           </Button>
