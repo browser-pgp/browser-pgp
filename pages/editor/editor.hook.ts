@@ -1,19 +1,21 @@
 import { EditorState } from './editor.state'
-import { useOpenPGP } from '~modules/openpgp'
 import { useStepNotification } from '~modules/utils/useStepNotification'
 import { useKeysSelect, KeyType } from './KeysSelect'
 import * as openpgp from 'openpgp'
 import { EditorState as EditorComponentState } from '~pages/components/Editor'
-import { useKeyPasswordAsk } from './KeyPasswordAsk'
+import { myDatabase } from '~libs/db'
+import { PGPUserDocType } from '~modules/pgp-user'
+import { usePrivateKeyCache } from './PrivateKeyCache'
+import { useKeyInfo } from '~pages/users/KeyInfo'
 
 const cache: { [k: string]: openpgp.key.Key } = {}
 
 export const useEditor = () => {
   const [state, setState] = EditorState.useContainer()
-  const pgp = useOpenPGP()
   const ks = useKeysSelect()
   const [{ editor }] = EditorComponentState.useContainer()
-  const keyPasswordAsk = useKeyPasswordAsk()
+  const { getUserPrivateKey } = usePrivateKeyCache()
+  const keyInfo = useKeyInfo()
 
   const encryptStepNotice = useStepNotification('加密')
   const encrypt = (msg: string) => {
@@ -23,7 +25,6 @@ export const useEditor = () => {
     return Promise.resolve(setState(s => ({ ...s, pending: true })))
       .then(async () => {
         let users = await ks.open(KeyType.Public)
-        console.log(users)
         if (users.length < 1) {
           throw new Error('未选择密钥')
         }
@@ -59,15 +60,7 @@ export const useEditor = () => {
           throw new Error('未选择密钥')
         }
         let user = users[0]
-        let privateKey: openpgp.key.Key = cache[user.fingerprint]
-        if (!privateKey) {
-          let key = users[0].privateKey
-          let password = await keyPasswordAsk.open(key)
-          let { keys } = await openpgp.key.readArmored(key)
-          privateKey = keys[0]
-          await privateKey.decrypt(password)
-          cache[user.fingerprint] = privateKey
-        }
+        let privateKey = await getUserPrivateKey(user)
 
         const { data } = await openpgp.decrypt({
           message: await openpgp.message.readArmored(msg),
@@ -88,8 +81,16 @@ export const useEditor = () => {
     }
     return Promise.resolve(setState(s => ({ ...s, pending: true })))
       .then(async () => {
-        const signData = await pgp.sign(msg)
-        setState(s => ({ ...s, displayText: signData }))
+        let users = await ks.open(KeyType.Private)
+        let user = users[0]
+
+        let privateKey = await getUserPrivateKey(user)
+
+        const { data } = await openpgp.sign({
+          message: openpgp.message.fromText(msg),
+          privateKeys: [privateKey],
+        })
+        editor.getModel().setValue(data as string)
       })
       .then(...signStepNotice)
       .finally(() => {
@@ -103,12 +104,32 @@ export const useEditor = () => {
     }
     return Promise.resolve(setState(s => ({ ...s, pending: true })))
       .then(async () => {
-        const signID = await pgp.verify(msg)
-        console.log(signID)
-        setState(s => ({
-          ...s,
-          displayText: `签名已确认. 签名者ID: ${signID}`,
-        }))
+        const users = await myDatabase.users.find().exec()
+        const keys = await Promise.all(
+          users.map(async u => {
+            const {
+              keys: [publicKey],
+            } = await openpgp.key.readArmored(u.publicKey)
+            return publicKey
+          }),
+        )
+        let { data, signatures } = await openpgp.verify({
+          message: await openpgp.message.readArmored(msg),
+          publicKeys: keys,
+        })
+        let keyid = signatures[0].keyid
+        let u: PGPUserDocType
+        for (let i = 0; i < keys.length; i++) {
+          let key = keys[i]
+          if (key.getKeys(keyid).length > 0) {
+            u = users[0]
+            break
+          }
+        }
+        keyInfo.open(u.publicKey)
+        editor
+          .getModel()
+          .setValue(String.fromCharCode.apply(null, data as Uint8Array))
       })
       .then(...verifyStepNotice)
       .finally(() => {

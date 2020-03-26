@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 
 export const EditorPage = () => {
   const classes = useStyles()
-  const { state, encrypt, decrypt } = useEditor()
+  const { state, encrypt, decrypt, sign, verify } = useEditor()
   const [{ editor }] = EditorState.useContainer()
   const [input, setInput] = useState('')
 
@@ -50,6 +50,20 @@ export const EditorPage = () => {
           >
             解密
           </Button>
+          <Button
+            variant="outlined"
+            disabled={state.pending}
+            onClick={() => sign(input)}
+          >
+            签名
+          </Button>
+          <Button
+            variant="outlined"
+            disabled={state.pending}
+            onClick={() => verify(input)}
+          >
+            查看签名信息
+          </Button>
         </CardActions>
         <CardContent className={classes.root}>
           <Editor classes={[classes.editor]} onChange={(e, v) => setInput(v)} />
@@ -64,15 +78,22 @@ import { EditorState } from '~pages/components/Editor'
 import { useEffect, useState } from 'react'
 import { KeysSelectState, KeysSelectDialog } from './KeysSelect'
 import { KeyPasswordAskState, KeyPasswordAskDialog } from './KeyPasswordAsk'
+import { KeyInfoState, KeyInfoDialog } from '~pages/users/KeyInfo'
+import { PrivateKeyCacheState } from './PrivateKeyCache'
 export default () => {
   return (
     <EditorPageState.Provider>
       <EditorState.Provider>
         <KeysSelectState.Provider>
           <KeyPasswordAskState.Provider>
-            <KeysSelectDialog />
-            <KeyPasswordAskDialog />
-            <EditorPage />
+            <PrivateKeyCacheState.Provider>
+              <KeyInfoState.Provider>
+                <KeysSelectDialog />
+                <KeyPasswordAskDialog />
+                <KeyInfoDialog />
+                <EditorPage />
+              </KeyInfoState.Provider>
+            </PrivateKeyCacheState.Provider>
           </KeyPasswordAskState.Provider>
         </KeysSelectState.Provider>
       </EditorState.Provider>

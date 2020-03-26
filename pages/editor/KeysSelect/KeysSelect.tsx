@@ -15,12 +15,7 @@ const CustomToolbarSelect = (props: {
 }) => {
   return (
     <Tooltip title="完成选择">
-      <IconButton
-        onClick={() => {
-          props.onFinish(props.rows)
-          return false
-        }}
-      >
+      <IconButton onClick={() => props.onFinish(props.rows)}>
         <CheckIcon />
       </IconButton>
     </Tooltip>
@@ -34,34 +29,17 @@ const cols: Col<PGPUserDucment>[] = [
 ]
 
 export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
+  const ks = useKeysSelect()
   const users = useObservable(() => {
     let q = myDatabase.users.find()
     if (props.keyType === KeyType.Private) {
-      q = q.where('privateKey').ne('')
+      q = q.exists('privateKey')
     }
     return q.$
   })
   const displayData = (users || []).map(u => {
     return cols.map(col => col.opath(u))
   })
-
-  const ks = useKeysSelect()
-  const { title, privateKeyTypeOptions } = useMemo(() => {
-    let title: string
-    let privateKeyTypeOptions: MUIDataTableOptions = {}
-    switch (props.keyType) {
-      case KeyType.Public:
-        title = '选择加密公钥'
-        break
-      case KeyType.Private:
-        title = '选择解密私钥'
-        privateKeyTypeOptions = {
-          selectableRows: 'single',
-        }
-        break
-    }
-    return { title, privateKeyTypeOptions }
-  }, [props.keyType])
 
   const options = createTableOptions({
     customToolbarSelect: rows => {
@@ -76,6 +54,17 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
     // searchOpen: true,
   })
 
+  let title: string
+  switch (props.keyType) {
+    case KeyType.Public:
+      title = '选择加密公钥'
+      break
+    case KeyType.Private:
+      title = '选择解密私钥'
+      options.selectableRows = 'single'
+      break
+  }
+
   return (
     <Fragment>
       {users === null && <LinearProgress />}
@@ -83,10 +72,7 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
         title={title}
         columns={cols}
         data={displayData}
-        options={{
-          ...options,
-          ...privateKeyTypeOptions,
-        }}
+        options={options}
       />
     </Fragment>
   )
