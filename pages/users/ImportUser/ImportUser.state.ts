@@ -11,17 +11,12 @@ const useImportUserState = () => {
   let models = useMemo(() => {
     let models: { [k: string]: monaco.editor.ITextModel } = {}
     for (let key in EditorModel) {
-      let u = monaco.Uri.parse(`pgp-user-import:/${key}`)
-      let m = monaco.editor.getModel(u)
-      if (!m) {
-        m = monaco.editor.createModel('', undefined, u)
-      }
-      models[key] = m
+      models[key] = monaco.editor.createModel('')
     }
     return models
   }, [])
   return useState({
-    open: true,
+    open: false,
     pending: false,
     models: models,
     focus: EditorModel.PublicKey,
@@ -29,7 +24,7 @@ const useImportUserState = () => {
 }
 
 const useImportUserEditorViewState = () => {
-  return useState({})
+  return useState<{ [k: string]: monaco.editor.ICodeEditorViewState }>({})
 }
 
 import { createContainer } from 'unstated-next'

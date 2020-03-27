@@ -14,8 +14,18 @@ const useKeyInfoState = () => {
 
 export const KeyInfoState = createContainer(useKeyInfoState)
 
+export type UserId = {
+  userid: string
+  email: string
+  name: string
+  comment: string
+}
+export function toUserId(userId: openpgp.packet.Userid): UserId {
+  return userId as any
+}
+
 export type DisplayKeyInfo = {
-  userId: { userid: string; email: string; name: string; comment: string }
+  userId: UserId
   keyId: string
   createAt: string
   expireAt: string

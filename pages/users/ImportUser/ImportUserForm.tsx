@@ -132,15 +132,19 @@ export const ImportUserForm = () => {
         <Button disabled={u.state.pending} onClick={() => u.close()}>
           取消
         </Button>
+        {(u.viewState[EditorModel.PrivateKey] ||
+          u.state.focus === EditorModel.PrivateKey) && (
+          <Button onClick={() => u.checkPrivateKey(editor)}>检查密钥对</Button>
+        )}
         <Button
           onClick={() => keyInfo.open(u.state.models[u.state.focus].getValue())}
         >
-          查看
+          查看公钥
         </Button>
         <Button
           type="submit"
           color="primary"
-          onClick={() => u.importUser()}
+          onClick={() => u.importUser(editor)}
           disabled={u.state.pending}
         >
           导入
