@@ -52,7 +52,7 @@ const CustomToolbar = () => {
       <IconButton onClick={() => add.open()}>
         <AddIcon />
       </IconButton>
-      <Button onClick={() => iu.open()}>导入公钥</Button>
+      <Button onClick={() => iu.open()}>导入</Button>
     </Fragment>
   )
 }
