@@ -24,10 +24,22 @@ export const useImportUser = () => {
   }
   const open = (id?: string) => {
     if (!id) {
-      setState(s => ({ ...s, open: true, id: false }))
+      setState(s => {
+        for (let k in s.models) {
+          let m = s.models[k]
+          m.setValue('')
+        }
+        return { ...s, open: true, id: false, focus: EditorModel.PublicKey }
+      })
       return
     }
-    setState(s => ({ ...s, open: true, pending: true, id: id }))
+    setState(s => ({
+      ...s,
+      open: true,
+      pending: true,
+      id: id,
+      focus: EditorModel.PublicKey,
+    }))
     myDatabase.users
       .findOne()
       .where('fingerprint')
@@ -125,6 +137,17 @@ export const useImportUser = () => {
           .where('fingerprint')
           .eq(fingerprint)
           .exec()
+        // 更新用户
+        if (state.id) {
+          if (privateKey !== u.privateKey) {
+            await u.atomicSet('privateKey', privateKey)
+          }
+          if (crt !== u.revocationCertificate) {
+            await u.atomicSet('revocationCertificate', crt)
+          }
+          close()
+          return
+        }
         if (u) {
           open(fingerprint)
           throw new Error('公钥已存在, 打开"更新用户"')
@@ -156,7 +179,7 @@ export const useImportUser = () => {
           return s
         })
       })
-      .then(...(state.id ? importUserNotification : updateUserNotification))
+      .then(...(state.id ? updateUserNotification : importUserNotification))
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
