@@ -27,7 +27,7 @@ export const useKeyPasswordAsk = () => {
         }
         close(password)
       })
-      .then(...decryptKeyStepNotifications)
+      .catch(decryptKeyStepNotifications[1])
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
