@@ -15,9 +15,8 @@ const useKeyInfoState = () => {
 export const KeyInfoState = createContainer(useKeyInfoState)
 
 export type DisplayKeyInfo = {
-  userId: string
+  userId: { userid: string; email: string; name: string; comment: string }
   keyId: string
-  comment: string
   createAt: string
   expireAt: string
   fingerprint: string
@@ -28,16 +27,14 @@ export const toDisplayKeyInfo = async (
   // @ts-ignore
   let keyId = key.getKeyId().toHex()
   // @ts-ignore
-  let userId = (await key.getPrimaryUser()).user.userId.userid
+  let primaryUser = await key.getPrimaryUser()
   let expireAt = await key.getExpirationTime()
-  let comment = ''
   let createAt = key.getCreationTime().toISOString()
   return {
     keyId,
-    userId,
-    comment,
+    userId: primaryUser.user.userId as any,
     createAt,
     expireAt,
-    fingerprint: key.primaryKey.getFingerprint()
+    fingerprint: key.primaryKey.getFingerprint(),
   }
 }

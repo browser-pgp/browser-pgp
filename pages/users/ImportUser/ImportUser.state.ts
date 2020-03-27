@@ -11,17 +11,17 @@ const useImportUserState = () => {
   let models = useMemo(() => {
     let models: { [k: string]: monaco.editor.ITextModel } = {}
     for (let key in EditorModel) {
-      let u = `pgp-user-import:/${key}`
-      models[key] = monaco.editor.createModel(
-        '',
-        undefined,
-        monaco.Uri.parse(u),
-      )
+      let u = monaco.Uri.parse(`pgp-user-import:/${key}`)
+      let m = monaco.editor.getModel(u)
+      if (!m) {
+        m = monaco.editor.createModel('', undefined, u)
+      }
+      models[key] = m
     }
     return models
   }, [])
   return useState({
-    open: false,
+    open: true,
     pending: false,
     models: models,
     focus: EditorModel.PublicKey,

@@ -14,19 +14,22 @@ const useStyles = makeStyles(theme => ({
 
 export const KeyInfo = ({ data }: { data: DisplayKeyInfo }) => {
   const classes = useStyles()
-  const { name = '', email = '', comment = '' } = util.parseUserId(data.userId)
   return (
     <Table>
       <TableBody>
         <TableRow>
           <TableCell>用户ID</TableCell>
           <TableCell>
-            {util.formatUserId({ name, email, comment: '' })}
+            {util.formatUserId({
+              name: data.userId.userid || data.userId.name,
+              email: data.userId.email,
+              comment: '',
+            })}
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>注释</TableCell>
-          <TableCell>{comment}</TableCell>
+          <TableCell>{data.userId.comment}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>密钥ID</TableCell>
