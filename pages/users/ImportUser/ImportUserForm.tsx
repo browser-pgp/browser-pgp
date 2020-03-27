@@ -76,7 +76,6 @@ export const ImportUserForm = () => {
     }
     if (u.state.open) {
       let lastViewState = u.viewState[u.state.focus]
-      console.log('lastViewState', lastViewState)
       if (lastViewState) {
         editor.restoreViewState(lastViewState)
       }

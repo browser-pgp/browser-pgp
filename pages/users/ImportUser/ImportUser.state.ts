@@ -21,7 +21,7 @@ const useImportUserState = () => {
     return models
   }, [])
   return useState({
-    open: true,
+    open: false,
     pending: false,
     models: models,
     focus: EditorModel.PublicKey,

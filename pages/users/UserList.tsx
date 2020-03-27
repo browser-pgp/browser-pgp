@@ -8,6 +8,7 @@ import { useAddUser } from './AddUser'
 import { DelUserBtn } from './DelUser'
 import { KeyInfoBtn } from './KeyInfo'
 import { useImportUser } from './ImportUser'
+import { EditButton } from './EditButton'
 
 const cols: Col<PGPUserDucment>[] = [
   new Col('称呼', item => {
@@ -39,7 +40,7 @@ const cols: Col<PGPUserDucment>[] = [
     filter: false,
     searchable: false,
     sort: false,
-    customBodyRender: id => <DelUserBtn id={id} />,
+    customBodyRender: id => <EditButton id={id} />,
   }),
 ]
 
