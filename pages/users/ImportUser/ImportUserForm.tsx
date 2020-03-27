@@ -5,6 +5,7 @@ import {
   Button,
   Tabs,
   Tab,
+  LinearProgress,
 } from '@material-ui/core'
 import { useImportUser } from './ImportUser.hook'
 import { Editor, EditorState } from '~pages/components/Editor'
@@ -115,10 +116,14 @@ export const ImportUserForm = () => {
               className={classes.tab}
               key={t.value}
               label={t.displayName}
+              disabled={u.state.pending}
               value={t.value}
             />
           ))}
         </Tabs>
+        <LinearProgress
+          style={u.state.pending ? {} : { visibility: 'hidden' }}
+        />
         <Editor
           classes={[classes.editor]}
           options={{
