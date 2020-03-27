@@ -7,7 +7,7 @@ import * as openpgp from 'openpgp'
 import { myDatabase } from '~libs/db'
 import { useStepNotification } from '~modules/utils/useStepNotification'
 import monaco from 'monaco-editor'
-import { useKeyPasswordAsk } from '~pages/users/KeyPasswordAsk'
+import { usePrivateKeyCache } from '~pages/users/PrivateKeyCache'
 import { v4 as UUIDV4 } from 'uuid'
 import { PGPUserDocType } from '~modules/pgp-user'
 import { toUserId } from '~pages/users/KeyInfo'
@@ -17,7 +17,7 @@ export const useImportUser = () => {
   const [viewState, setViewState] = ImportUserEditorViewState.useContainer()
   const importUserNotification = useStepNotification('导入用户公钥')
   const checkPrivateKeyNotifications = useStepNotification('检查密钥对')
-  const keyPasswordAsk = useKeyPasswordAsk()
+  const { getUserPrivateKey } = usePrivateKeyCache()
   const close = () => {
     setState(s => ({ ...s, open: false }))
   }
@@ -46,20 +46,17 @@ export const useImportUser = () => {
         }
         return keys[0]
       })
-    const privateKey = await openpgp.key
-      .readArmored(_privateKey)
-      .then(({ keys, err }) => {
-        if (err?.[0]) {
-          changeEditorTab(EditorModel.PrivateKey, editor)
-          throw new Error(`私钥解析出现问题: ${err[0]?.message}`)
-        }
-        return keys[0]
-      })
-    let password = await keyPasswordAsk.open(_privateKey)
-    if (!password) {
-      throw new Error('没有输入解密密码')
-    }
-    await privateKey.decrypt(password)
+    await openpgp.key.readArmored(_privateKey).then(({ keys, err }) => {
+      if (err?.[0]) {
+        changeEditorTab(EditorModel.PrivateKey, editor)
+        throw new Error(`私钥解析出现问题: ${err[0]?.message}`)
+      }
+      return keys[0]
+    })
+    let privateKey = await getUserPrivateKey({
+      fingerprint: publicKey.getFingerprint(),
+      privateKey: _privateKey,
+    })
     let msg = UUIDV4()
     let { data: emsg } = await openpgp.encrypt({
       message: openpgp.message.fromText(msg),
