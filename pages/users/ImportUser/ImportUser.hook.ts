@@ -11,6 +11,7 @@ import { usePrivateKeyCache } from '~pages/users/PrivateKeyCache'
 import { v4 as UUIDV4 } from 'uuid'
 import { PGPUserDocType } from '~modules/pgp-user'
 import { toUserId } from '~pages/users/KeyInfo'
+import { useKeyPasswordAsk } from '~pages/users/KeyPasswordAsk'
 
 export const useImportUser = () => {
   const [state, setState] = ImportUserState.useContainer()
@@ -18,6 +19,7 @@ export const useImportUser = () => {
   const importUserNotification = useStepNotification('导入用户')
   const updateUserNotification = useStepNotification('更新用户')
   const checkPrivateKeyNotifications = useStepNotification('检查密钥对')
+  const keyPasswordAsk = useKeyPasswordAsk()
   const { getUserPrivateKey } = usePrivateKeyCache()
   const close = () => {
     setState(s => ({ ...s, open: false }))
@@ -140,6 +142,12 @@ export const useImportUser = () => {
         // 更新用户
         if (state.id) {
           if (privateKey !== u.privateKey) {
+            if (!privateKey) {
+              let pass = await keyPasswordAsk.open(u.privateKey)
+              if (!pass) {
+                throw new Error('更新私钥需要密码验证')
+              }
+            }
             await u.atomicSet('privateKey', privateKey)
           }
           if (crt !== u.revocationCertificate) {
