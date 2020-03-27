@@ -18,7 +18,9 @@ import { useDelUser } from '../DelUser'
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
   editor: {
-    height: 375,
+    height: '40vh',
+    minHeight: 375,
+    maxHeight: 500,
   },
   head: {
     paddingBottom: theme.spacing(1),
