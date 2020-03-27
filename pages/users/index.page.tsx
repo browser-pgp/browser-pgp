@@ -1,8 +1,8 @@
-import { Container, LinearProgress } from '@material-ui/core'
+import { LinearProgress } from '@material-ui/core'
 import { myDatabase } from '~libs/db'
 import { useObservable } from 'rxjs-hooks'
 import { UserList } from './UserList'
-import { MainLayout } from "~pages/layouts";
+import { MainLayout } from '~pages/layouts'
 
 export const UsersPage = () => {
   const users = useObservable(() => myDatabase.users.find().$)
@@ -14,24 +14,20 @@ export const UsersPage = () => {
   )
 }
 
-import { AddUserState, AddUserDialog } from './AddUser'
-import { DelUserState, DelUserDialog } from './DelUser'
-import { KeyInfoState, KeyInfoDialog } from './KeyInfo'
-import { ImportUserState, ImportUserDialog } from './ImportUser'
+import { AddUserProvider } from './AddUser'
+import { DelUserProvider } from './DelUser'
+import { KeyInfoProvider } from './KeyInfo'
+import { ImportUserProvider } from './ImportUser'
 export default () => {
   return (
-    <AddUserState.Provider>
-      <DelUserState.Provider>
-        <KeyInfoState.Provider>
-          <ImportUserState.Provider>
-            <AddUserDialog />
-            <DelUserDialog />
-            <KeyInfoDialog />
-            <ImportUserDialog />
+    <AddUserProvider>
+      <DelUserProvider>
+        <KeyInfoProvider>
+          <ImportUserProvider>
             <UsersPage />
-          </ImportUserState.Provider>
-        </KeyInfoState.Provider>
-      </DelUserState.Provider>
-    </AddUserState.Provider>
+          </ImportUserProvider>
+        </KeyInfoProvider>
+      </DelUserProvider>
+    </AddUserProvider>
   )
 }

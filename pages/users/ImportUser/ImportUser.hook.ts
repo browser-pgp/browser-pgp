@@ -1,11 +1,16 @@
-import { ImportUserState } from './ImportUser.state'
-import { toDisplayKeyInfo } from '../KeyInfo/KeyInfo.state'
+import {
+  ImportUserState,
+  EditorModel,
+  ImportUserEditorViewState,
+} from './ImportUser.state'
 import * as openpgp from 'openpgp'
 import { myDatabase } from '~libs/db'
 import { useStepNotification } from '~modules/utils/useStepNotification'
+import monaco from 'monaco-editor'
 
 export const useImportUser = () => {
   const [state, setState] = ImportUserState.useContainer()
+  const [viewState, setViewState] = ImportUserEditorViewState.useContainer()
   const importUserNotification = useStepNotification('导入用户公钥')
   const close = () => {
     setState(s => ({ ...s, open: false }))
@@ -13,7 +18,8 @@ export const useImportUser = () => {
   const open = () => {
     setState(s => ({ ...s, open: true }))
   }
-  const importUser = async (pubKey: string) => {
+  const importUser = async () => {
+    let pubKey: string
     if (state.pending) {
       return
     }
@@ -50,11 +56,27 @@ export const useImportUser = () => {
         setState(s => ({ ...s, pending: false }))
       })
   }
+  const changeEditorTab = (
+    v: EditorModel,
+    editor: monaco.editor.IStandaloneCodeEditor,
+  ) => {
+    setViewState({
+      ...viewState,
+      [state.focus]: editor.saveViewState(),
+    })
+    setState(s => ({
+      ...s,
+      focus: v,
+    }))
+  }
   return {
     state,
     setState,
+    viewState,
     close,
     open,
     importUser,
+    changeEditorTab,
+    setViewState,
   }
 }

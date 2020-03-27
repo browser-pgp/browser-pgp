@@ -11,6 +11,7 @@ import { Editor, EditorState } from '~pages/components/Editor'
 import { useKeyInfo } from '../KeyInfo'
 import monaco from 'monaco-editor'
 import { useState, Fragment, useEffect } from 'react'
+import { EditorModel } from './ImportUser.state'
 
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
@@ -46,13 +47,21 @@ const options: monaco.editor.IStandaloneEditorConstructionOptions = {
 
 let defaultPubKey = ``
 
-const ImportUserForm = () => {
+const createTab = (value: EditorModel, displayName: string) => ({
+  displayName,
+  value,
+})
+const tabs = [
+  createTab(EditorModel.PublicKey, '公钥'),
+  createTab(EditorModel.PrivateKey, '私钥'),
+  createTab(EditorModel.RevocationCertificate, '吊销证书'),
+]
+
+export const ImportUserForm = () => {
   const keyInfo = useKeyInfo()
-  const [pubKey, setPubKey] = useState(defaultPubKey)
   const u = useImportUser()
   const classes = useStyles()
   const [{ editor }] = EditorState.useContainer()
-  const [v, setV] = useState(0)
   useEffect(() => {
     if (!editor) {
       return
@@ -61,6 +70,35 @@ const ImportUserForm = () => {
       readOnly: u.state.pending,
     })
   }, [u.state.pending])
+  useEffect(() => {
+    if (!editor) {
+      return
+    }
+    if (u.state.open) {
+      let lastViewState = u.viewState[u.state.focus]
+      console.log('lastViewState', lastViewState)
+      if (lastViewState) {
+        editor.restoreViewState(lastViewState)
+      }
+    } else {
+      let currentViewState = editor.saveViewState()
+      u.setViewState(s => ({
+        ...s,
+        [u.state.focus]: currentViewState,
+      }))
+    }
+  }, [u.state.open, editor])
+  useEffect(() => {
+    if (!editor) {
+      return
+    }
+    editor.setModel(u.state.models[u.state.focus])
+    editor.focus()
+    let lastViewState = u.viewState[u.state.focus]
+    if (lastViewState) {
+      editor.restoreViewState(lastViewState)
+    }
+  }, [u.state.focus])
   return (
     <Fragment>
       <DialogTitle className={classes.head}>用户导入</DialogTitle>
@@ -70,17 +108,24 @@ const ImportUserForm = () => {
           indicatorColor="primary"
           className={classes.tabs}
           TabIndicatorProps={{ className: classes.tabIndicator }}
-          value={v}
-          onChange={(e, v) => setV(v)}
+          value={u.state.focus}
+          onChange={(e, v) => u.changeEditorTab(v, editor)}
         >
-          <Tab className={classes.tab} label="公钥" value="0" />
-          <Tab className={classes.tab} label="私钥" value="1" />
-          <Tab className={classes.tab} label="吊销证书" value="2" />
+          {tabs.map(t => (
+            <Tab
+              className={classes.tab}
+              key={t.value}
+              label={t.displayName}
+              value={t.value}
+            />
+          ))}
         </Tabs>
         <Editor
           classes={[classes.editor]}
-          options={options}
-          onChange={(e, v) => setPubKey(v)}
+          options={{
+            ...options,
+            model: u.state.models[u.state.focus],
+          }}
           value={defaultPubKey}
         />
       </DialogContent>
@@ -88,11 +133,15 @@ const ImportUserForm = () => {
         <Button disabled={u.state.pending} onClick={() => u.close()}>
           取消
         </Button>
-        <Button onClick={() => keyInfo.open(pubKey)}>查看</Button>
+        <Button
+          onClick={() => keyInfo.open(u.state.models[u.state.focus].getValue())}
+        >
+          查看
+        </Button>
         <Button
           type="submit"
           color="primary"
-          onClick={() => u.importUser(pubKey)}
+          onClick={() => u.importUser()}
           disabled={u.state.pending}
         >
           导入
@@ -101,13 +150,3 @@ const ImportUserForm = () => {
     </Fragment>
   )
 }
-
-const WrapperImportUserForm = () => {
-  return (
-    <EditorState.Provider>
-      <ImportUserForm />
-    </EditorState.Provider>
-  )
-}
-
-export { WrapperImportUserForm as ImportUserForm }

@@ -8,13 +8,12 @@ export const useEditor = () => {
     value = '',
     options: monaco.editor.IStandaloneEditorConstructionOptions = {},
   ) => {
-    const model = monaco.editor.createModel(value)
-    model.updateOptions({
-      tabSize: 2,
-    })
+    if (typeof options.model === 'undefined') {
+      options.model = monaco.editor.createModel(value)
+    }
     const editor = monaco.editor.create(ref, {
-      model,
       fontSize: 16,
+      tabSize: 2,
       wordWrap: 'on',
       ...options,
     })
@@ -30,7 +29,6 @@ export const useEditor = () => {
       return
     }
     state.editor.dispose()
-    state.editor.getModel().dispose()
     setState(s => ({ ...s, editor: null }))
   }
   return { state, setState, init, destory }
