@@ -7,7 +7,9 @@ export const useDelUser = () => {
   const removeUserStepNotifications = useStepNotification('删除用户')
 
   const open = async (id: string) => {
-    setState(s => ({ ...s, open: true, id }))
+    return new Promise<boolean>(rl => {
+      setState(s => ({ ...s, open: true, id, cb: rl }))
+    })
   }
 
   const remove = async () => {
@@ -22,7 +24,7 @@ export const useDelUser = () => {
           .eq(state.id)
           .exec()
         await doc.remove()
-        setState(s => ({ ...s, open: false }))
+        close(true)
       })
       .then(...removeUserStepNotifications)
       .finally(() => {
@@ -30,8 +32,9 @@ export const useDelUser = () => {
       })
   }
 
-  const close = () => {
+  const close = (deleted = false) => {
     setState(s => ({ ...s, open: false }))
+    state.cb(deleted)
   }
 
   return {

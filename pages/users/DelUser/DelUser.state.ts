@@ -5,6 +5,7 @@ const useDelUserState = () => {
     open: false,
     pending: false,
     id: '',
+    cb: (() => 0) as (deleted: boolean) => any,
   })
 }
 export const DelUserState = createContainer(useDelUserState)

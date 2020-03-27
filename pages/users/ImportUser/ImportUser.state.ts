@@ -20,6 +20,7 @@ const useImportUserState = () => {
     pending: false,
     models: models,
     focus: EditorModel.PublicKey,
+    id: false as false | string,
   })
 }
 

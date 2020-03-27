@@ -15,14 +15,34 @@ import { toUserId } from '~pages/users/KeyInfo'
 export const useImportUser = () => {
   const [state, setState] = ImportUserState.useContainer()
   const [viewState, setViewState] = ImportUserEditorViewState.useContainer()
-  const importUserNotification = useStepNotification('导入用户公钥')
+  const importUserNotification = useStepNotification('导入用户')
+  const updateUserNotification = useStepNotification('更新用户')
   const checkPrivateKeyNotifications = useStepNotification('检查密钥对')
   const { getUserPrivateKey } = usePrivateKeyCache()
   const close = () => {
     setState(s => ({ ...s, open: false }))
   }
-  const open = () => {
-    setState(s => ({ ...s, open: true }))
+  const open = (id?: string) => {
+    if (!id) {
+      setState(s => ({ ...s, open: true, id: false }))
+      return
+    }
+    setState(s => ({ ...s, open: true, pending: true, id: id }))
+    myDatabase.users
+      .findOne()
+      .where('fingerprint')
+      .eq(id)
+      .exec()
+      .then(user => {
+        state.models[EditorModel.PublicKey].setValue(user.publicKey)
+        state.models[EditorModel.PrivateKey].setValue(user.privateKey || '')
+        state.models[EditorModel.RevocationCertificate].setValue(
+          user.revocationCertificate || '',
+        )
+      })
+      .finally(() => {
+        setState(s => ({ ...s, pending: false }))
+      })
   }
   const checkPrivateKey = async (
     editor?: monaco.editor.IStandaloneCodeEditor,
@@ -106,7 +126,8 @@ export const useImportUser = () => {
           .eq(fingerprint)
           .exec()
         if (u) {
-          throw new Error('公钥已存在')
+          open(fingerprint)
+          throw new Error('公钥已存在, 打开"更新用户"')
         }
 
         const userid = toUserId((await key.getPrimaryUser()).user.userId)
@@ -135,10 +156,14 @@ export const useImportUser = () => {
           return s
         })
       })
-      .then(...importUserNotification)
+      .then(...(state.id ? importUserNotification : updateUserNotification))
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
+  }
+
+  const isShouldMakePublicKeyReadOnly = (v: EditorModel = state.focus) => {
+    return v === EditorModel.PublicKey && !!state.id
   }
   const changeEditorTab = (
     v: EditorModel,
@@ -147,6 +172,9 @@ export const useImportUser = () => {
     setViewState({
       ...viewState,
       [state.focus]: editor.saveViewState(),
+    })
+    editor.updateOptions({
+      readOnly: isShouldMakePublicKeyReadOnly(v),
     })
     if (state.focus === v) {
       editor.focus()
@@ -170,5 +198,6 @@ export const useImportUser = () => {
       checkPrivateKey(...r).then(
         ...checkPrivateKeyNotifications,
       )) as typeof checkPrivateKey,
+    isShouldMakePublicKeyReadOnly,
   }
 }

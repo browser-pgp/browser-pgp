@@ -13,6 +13,7 @@ import { useKeyInfo } from '../KeyInfo'
 import monaco from 'monaco-editor'
 import { useState, Fragment, useEffect } from 'react'
 import { EditorModel } from './ImportUser.state'
+import { useDelUser } from '../DelUser'
 
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
@@ -61,20 +62,30 @@ const tabs = [
 export const ImportUserForm = () => {
   const keyInfo = useKeyInfo()
   const u = useImportUser()
+  const del = useDelUser()
   const classes = useStyles()
   const [{ editor }] = EditorState.useContainer()
   useEffect(() => {
     if (!editor) {
       return
     }
+    if (u.state.pending) {
+      editor.updateOptions({
+        readOnly: u.state.pending,
+      })
+      return
+    }
     editor.updateOptions({
-      readOnly: u.state.pending,
+      readOnly: u.isShouldMakePublicKeyReadOnly(),
     })
   }, [u.state.pending])
   useEffect(() => {
     if (!editor) {
       return
     }
+    editor.updateOptions({
+      readOnly: u.isShouldMakePublicKeyReadOnly(),
+    })
     if (u.state.open) {
       let lastViewState = u.viewState[u.state.focus]
       if (lastViewState) {
@@ -101,7 +112,21 @@ export const ImportUserForm = () => {
   }, [u.state.focus])
   return (
     <Fragment>
-      <DialogTitle className={classes.head}>用户导入</DialogTitle>
+      <DialogTitle className={classes.head}>
+        {u.state.id ? '更新用户' : '用户导入'}
+        {u.state.id && (
+          <Button
+            style={{ float: 'right' }}
+            onClick={() =>
+              del
+                .open(u.state.id as string)
+                .then(deleted => deleted && u.close())
+            }
+          >
+            删除
+          </Button>
+        )}
+      </DialogTitle>
       <DialogContent className={classes.content}>
         <Tabs
           variant="scrollable"
@@ -146,14 +171,25 @@ export const ImportUserForm = () => {
         >
           查看公钥
         </Button>
-        <Button
-          type="submit"
-          color="primary"
-          onClick={() => u.importUser(editor)}
-          disabled={u.state.pending}
-        >
-          导入
-        </Button>
+        {u.state.id ? (
+          <Button
+            type="submit"
+            color="primary"
+            onClick={() => u.importUser(editor)}
+            disabled={u.state.pending}
+          >
+            更新
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            color="primary"
+            onClick={() => u.importUser(editor)}
+            disabled={u.state.pending}
+          >
+            导入
+          </Button>
+        )}
       </DialogActions>
     </Fragment>
   )
