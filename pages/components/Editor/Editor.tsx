@@ -13,16 +13,12 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export interface Props {
-  onChange?: (e: monaco.editor.IModelContentChangedEvent, value: string) => any
   options?: monaco.editor.IStandaloneEditorConstructionOptions
-  value?: string
   classes?: ClassValue[]
 }
 
 export const Editor: React.StatelessComponent<Props> = ({
-  onChange,
   options = {},
-  value = '',
   classes: propsClasses = [],
 }) => {
   const editor = useEditor()
@@ -35,12 +31,7 @@ export const Editor: React.StatelessComponent<Props> = ({
     if (editor.state.editor) {
       return
     }
-    const model = editor.init(f.current, value, options)
-    if (typeof onChange === 'function') {
-      model.onDidChangeContent(e => {
-        onChange(e, model.getValue())
-      })
-    }
+    editor.init(f.current, options)
     return editor.destory
   }, [f.current])
 
