@@ -90,7 +90,14 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
   return (
     <Fragment>
       {users === null && <LinearProgress />}
-      <div className={classes.table}>
+      <div
+        className={classes.table}
+        onKeyPress={e => {
+          if (e.key === 'Enter' && attr.selectedUsers.length > 0) {
+            ks.close(attr.selectedUsers)
+          }
+        }}
+      >
         <MUIDatatables
           title={title}
           columns={cols}
