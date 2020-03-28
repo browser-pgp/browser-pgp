@@ -3,6 +3,7 @@ import { useStepNotification } from '~modules/utils/useStepNotification'
 import { useKeysSelect, KeyType } from './KeysSelect'
 import * as openpgp from 'openpgp'
 import { EditorState as EditorComponentState } from '~pages/components/Editor'
+import monaco from '~pages/components/Editor/MonacoEditor'
 import { myDatabase } from '~libs/db'
 import { PGPUserDocType } from '~modules/pgp-user'
 import { usePrivateKeyCache } from '~pages/users/PrivateKeyCache'
@@ -18,7 +19,7 @@ export const useEditor = () => {
   const keyInfo = useKeyInfo()
 
   const encryptStepNotice = useStepNotification('加密')
-  const encrypt = (msg: string) => {
+  const encrypt = (msg: string = state.model.getValue()) => {
     if (state.pending) {
       return
     }
@@ -49,7 +50,7 @@ export const useEditor = () => {
   }
 
   const decryptStepNotice = useStepNotification('解密')
-  const decrypt = (msg: string) => {
+  const decrypt = (msg: string = state.model.getValue()) => {
     if (state.pending) {
       return
     }
@@ -75,7 +76,7 @@ export const useEditor = () => {
   }
 
   const signStepNotice = useStepNotification('签名')
-  const sign = (msg: string, noLock = false) => {
+  const sign = (msg: string = state.model.getValue(), noLock = false) => {
     if (state.pending) {
       return
     }
@@ -104,7 +105,7 @@ export const useEditor = () => {
       })
   }
   const verifyStepNotice = useStepNotification('确认签名')
-  const verify = (msg: string, noLock = false) => {
+  const verify = (msg: string = state.model.getValue(), noLock = false) => {
     if (state.pending) {
       return
     }
@@ -146,7 +147,7 @@ export const useEditor = () => {
       })
   }
 
-  const signOrVerify = (msg: string) => {
+  const signOrVerify = (msg: string = state.model.getValue()) => {
     if (state.pending) {
       return
     }

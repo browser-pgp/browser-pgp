@@ -46,7 +46,18 @@ export const EditorPage = () => {
     editor.updateOptions({
       readOnly: state.pending,
     })
+    if (!state.pending) {
+      editor.focus()
+    }
   }, [state.pending])
+  useEffect(() => {
+    state.model.onDidChangeContent(() => {
+      setInput(state.model.getValue())
+    })
+    return () => {
+      state.model.dispose()
+    }
+  }, [state.model])
 
   return (
     <MainLayout>
@@ -63,7 +74,7 @@ export const EditorPage = () => {
           <Button
             variant="outlined"
             disabled={state.pending}
-            onClick={() => signOrVerify(input)}
+            onClick={() => signOrVerify()}
             startIcon={<EditIcon />}
           >
             签名/核对
@@ -71,7 +82,7 @@ export const EditorPage = () => {
           <Button
             variant="outlined"
             disabled={state.pending}
-            onClick={() => encrypt(input)}
+            onClick={() => encrypt()}
             startIcon={<LockIcon />}
           >
             加密
@@ -79,7 +90,7 @@ export const EditorPage = () => {
           <Button
             variant="outlined"
             disabled={state.pending}
-            onClick={() => decrypt(input)}
+            onClick={() => decrypt()}
             startIcon={<LockOpenIcon />}
           >
             解密
@@ -87,7 +98,7 @@ export const EditorPage = () => {
           <Button
             variant="outlined"
             disabled={state.pending}
-            onClick={() => sign(input)}
+            onClick={() => sign()}
             className={classes.hidden}
           >
             签名
@@ -95,7 +106,7 @@ export const EditorPage = () => {
           <Button
             variant="outlined"
             disabled={state.pending}
-            onClick={() => verify(input)}
+            onClick={() => verify()}
             className={classes.hidden}
           >
             查看签名
@@ -103,7 +114,7 @@ export const EditorPage = () => {
         </CardActions>
         <LinearProgress style={state.pending ? {} : { visibility: 'hidden' }} />
         <CardContent className={classes.root}>
-          <Editor classes={[classes.editor]} onChange={(e, v) => setInput(v)} />
+          <Editor classes={[classes.editor]} options={{ model: state.model }} />
         </CardContent>
       </Card>
     </MainLayout>
