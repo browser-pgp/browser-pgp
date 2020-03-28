@@ -150,6 +150,9 @@ export const useEditor = () => {
     if (state.pending) {
       return
     }
+    let stepNotice:
+      | typeof signStepNotice
+      | typeof verifyStepNotice = verifyStepNotice
     return Promise.resolve(setState(s => ({ ...s, pending: true })))
       .then(async () => {
         try {
@@ -158,8 +161,13 @@ export const useEditor = () => {
           await verify(msg, true)
         } catch (err) {
           await sign(msg, true)
+          stepNotice = signStepNotice
         }
       })
+      .then(
+        () => stepNotice[0](),
+        err => stepNotice[1](err),
+      )
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
