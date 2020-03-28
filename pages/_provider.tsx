@@ -9,14 +9,14 @@ import { PrivateKeyCacheState } from './users/PrivateKeyCache'
 export const Provider: StatelessComponent = props => (
   <ThemeProvider theme={theme}>
     <CssBaseline />
-    <SnackbarProvider autoHideDuration={2e3}>
-      <KeyPasswordAskProvider>
-        <PrivateKeyCacheState.Provider>
+    <PrivateKeyCacheState.Provider>
+      <SnackbarProvider autoHideDuration={2e3}>
+        <KeyPasswordAskProvider>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           {props.children}
-        </PrivateKeyCacheState.Provider>
-      </KeyPasswordAskProvider>
-    </SnackbarProvider>
+        </KeyPasswordAskProvider>
+      </SnackbarProvider>
+    </PrivateKeyCacheState.Provider>
   </ThemeProvider>
 )
 
