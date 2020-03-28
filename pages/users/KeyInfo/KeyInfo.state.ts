@@ -20,7 +20,9 @@ export type UserId = {
   name: string
   comment: string
 }
-export function toUserId(userId: openpgp.packet.Userid): UserId {
+export function toUserId(_userId: openpgp.packet.Userid): UserId {
+  let userId: UserId = _userId as any
+  userId.name = userId.name || userId.userid
   return userId as any
 }
 
@@ -42,7 +44,7 @@ export const toDisplayKeyInfo = async (
   let createAt = key.getCreationTime().toISOString()
   return {
     keyId,
-    userId: primaryUser.user.userId as any,
+    userId: toUserId(primaryUser.user.userId),
     createAt,
     expireAt,
     fingerprint: key.primaryKey.getFingerprint(),

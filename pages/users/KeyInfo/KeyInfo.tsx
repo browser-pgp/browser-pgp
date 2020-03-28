@@ -21,7 +21,7 @@ export const KeyInfo = ({ data }: { data: DisplayKeyInfo }) => {
           <TableCell>用户ID</TableCell>
           <TableCell>
             {util.formatUserId({
-              name: data.userId.userid || data.userId.name,
+              name: data.userId.name,
               email: data.userId.email,
               comment: '',
             })}

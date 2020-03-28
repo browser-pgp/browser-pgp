@@ -172,7 +172,7 @@ export const useImportUser = () => {
         let user: PGPUserDocType = {
           publicKey: publicKey,
           fingerprint,
-          name: userid.userid || userid.name,
+          name: userid.name,
           email: userid.email,
         }
 
