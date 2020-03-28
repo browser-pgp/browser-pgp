@@ -1,24 +1,26 @@
-import MUIDatatables, { MUIDataTableOptions } from 'mui-datatables'
+import MUIDatatables from 'mui-datatables'
 import { createTableOptions, Col } from '~modules/utils/mui-table'
 import { PGPUserDucment } from '~modules/pgp-user'
 import { myDatabase } from '~libs/db'
 import { useObservable } from 'rxjs-hooks'
-import { Fragment, StatelessComponent, useCallback, useMemo } from 'react'
-import { LinearProgress, Tooltip, IconButton, Button } from '@material-ui/core'
+import { Fragment, StatelessComponent, useState, useMemo } from 'react'
+import { LinearProgress, Button, makeStyles, useTheme } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
 import { useKeysSelect } from './KeysSelect.hook'
 import { KeyType } from './KeysSelect.state'
 
-const CustomToolbarSelect = (props: {
-  rows: number[]
-  onFinish: (idx: number[]) => any
-}) => {
+const CustomToolbarSelect = (props: { onFinish: () => any }) => {
+  const theme = useTheme()
   return (
-    <Tooltip title="完成选择">
-      <IconButton onClick={() => props.onFinish(props.rows)}>
-        <CheckIcon />
-      </IconButton>
-    </Tooltip>
+    <div style={{ paddingLeft: theme.spacing(2) }}>
+      <Button
+        startIcon={<CheckIcon />}
+        style={{ margin: '6px 0', lineHeight: '24px' }}
+        onClick={() => props.onFinish()}
+      >
+        完成选择
+      </Button>
+    </div>
   )
 }
 
@@ -28,8 +30,21 @@ const cols: Col<PGPUserDucment>[] = [
   new Col('指纹', u => u.fingerprint),
 ]
 
+const useStyles = makeStyles(theme => ({
+  table: {
+    '& .MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded': {
+      flexDirection: 'row-reverse',
+    },
+    '& .MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded h6': {
+      paddingRight: theme.spacing(3),
+      paddingLeft: 0,
+    },
+  },
+}))
+
 export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
   const ks = useKeysSelect()
+  const classes = useStyles()
   const users = useObservable(() => {
     let q = myDatabase.users.find()
     if (props.keyType === KeyType.Private) {
@@ -40,17 +55,24 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
   const displayData = (users || []).map(u => {
     return cols.map(col => col.opath(u))
   })
+  // store selectedUsers like class attr
+  const attr = useMemo<{ selectedUsers: PGPUserDucment[] }>(
+    () => ({ selectedUsers: [] }),
+    [],
+  )
 
   const options = createTableOptions({
     customToolbarSelect: rows => {
       return (
-        <CustomToolbarSelect
-          rows={rows.data.map(d => d.dataIndex)}
-          onFinish={idx => ks.close(idx.map(i => users[i]))}
-        />
+        <CustomToolbarSelect onFinish={() => ks.close(attr.selectedUsers)} />
       )
     },
     selectableRowsOnClick: true,
+    onRowsSelect: (curr, all: { dataIndex: number }[]) => {
+      let selectedUsers = all.map(r => users[r.dataIndex])
+      attr.selectedUsers = selectedUsers
+      return all
+    },
     // searchOpen: true,
   })
 
@@ -68,12 +90,14 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
   return (
     <Fragment>
       {users === null && <LinearProgress />}
-      <MUIDatatables
-        title={title}
-        columns={cols}
-        data={displayData}
-        options={options}
-      />
+      <div className={classes.table}>
+        <MUIDatatables
+          title={title}
+          columns={cols}
+          data={displayData}
+          options={options}
+        />
+      </div>
     </Fragment>
   )
 }
