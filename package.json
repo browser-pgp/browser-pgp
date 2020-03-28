@@ -42,7 +42,7 @@
     "react-hook-form": "^5.1.3",
     "rxdb": "^8.8.0",
     "rxjs": "^6.5.4",
-    "typescript": "^3.8.3",
+    "typescript": "^3.9.0-beta",
     "unstated-next": "^1.1.0"
   },
   "dependencies": {
