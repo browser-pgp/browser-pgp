@@ -49,8 +49,6 @@ const options: monaco.editor.IStandaloneEditorConstructionOptions = {
   minimap: { enabled: false },
 }
 
-let defaultPubKey = ``
-
 const createTab = (value: EditorModel, displayName: string) => ({
   displayName,
   value,
@@ -157,7 +155,6 @@ export const ImportUserForm = () => {
             ...options,
             model: u.state.models[u.state.focus],
           }}
-          value={defaultPubKey}
         />
       </DialogContent>
       <DialogActions>
