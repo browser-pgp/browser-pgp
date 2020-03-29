@@ -1,7 +1,7 @@
 import { AddUserState } from './AddUser.state'
 import openpgp from 'openpgp'
-import { useSnackbar } from 'notistack'
 import { myDatabase } from '~libs/db'
+import { useStepNotification } from '~modules/utils/useStepNotification'
 
 const CurveOption = (name: string) => ({ name, value: name })
 export const CurveOptions = [
@@ -26,7 +26,7 @@ export type FormData = {
 
 export const useAddUser = () => {
   const [state, setState] = AddUserState.useContainer()
-  const { enqueueSnackbar } = useSnackbar()
+  const genUserKeyStepNotifications = useStepNotification('生成用户密钥对')
 
   const open = () => {
     setState(s => ({ ...s, open: true }))
@@ -58,16 +58,7 @@ export const useAddUser = () => {
           revocationCertificate: res.revocationCertificate,
         })
       })
-      .then(
-        () => {
-          enqueueSnackbar(`生成用户密钥成功`)
-          setState(s => ({ ...s, open: false }))
-        },
-        (err: Error) => {
-          enqueueSnackbar(`生成用户密钥失败. 错误: ${err?.message}`)
-          console.error(err)
-        },
-      )
+      .then(...genUserKeyStepNotifications)
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
