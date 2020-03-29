@@ -60,7 +60,7 @@ export const EditorPage = () => {
   }, [state.model])
 
   return (
-    <MainLayout>
+    <MainLayout title="编辑器">
       <Card>
         <CardActions>
           <CopyToClipboard

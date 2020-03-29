@@ -1,6 +1,7 @@
 import { Container, Grid } from '@material-ui/core'
 import { TopBar } from './TopBar'
 import { Fragment } from 'react'
+import Head from 'next/head'
 
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
@@ -10,10 +11,15 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export const MainLayout: React.StatelessComponent = props => {
+export const MainLayout: React.StatelessComponent<{
+  title: string
+}> = props => {
   const classes = useStyles()
   return (
     <Fragment>
+      <Head>
+        <title>{props.title} PGP in Browser</title>
+      </Head>
       <TopBar />
       <Container className={classes.main}>{props.children}</Container>
     </Fragment>
