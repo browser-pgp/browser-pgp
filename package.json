@@ -4,8 +4,9 @@
   "description": "",
   "main": "next.config.js",
   "scripts": {
-    "clean:gh": "rm -rf gh-pages/_next gh-pages/monaco-editor .next",
-    "preexport": "npm run clean:gh && PATH_EXT_NAME='.html' next build",
+    "gh:clean": "rm -rf gh-pages/_next gh-pages/monaco-editor .next",
+    "gh:push": "cd gh-pages/ && git add -A && git commit -m 'update' && git push",
+    "preexport": "npm run gh:clean && PATH_EXT_NAME='.html' next build",
     "export": "next export && cp -r out/* gh-pages",
     "postexport": "touch gh-pages/.nojekyll"
   },
