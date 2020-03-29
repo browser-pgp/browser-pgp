@@ -4,9 +4,10 @@
   "description": "",
   "main": "next.config.js",
   "scripts": {
-    "preexport": "rm -rf gh-pages/docs/ .next && next build",
-    "export": "next export --outdir gh-pages/docs/",
-    "postexport": "touch gh-pages/docs/.nojekyll"
+    "clean:gh": "rm -rf gh-pages/_next gh-pages/monaco-editor .next",
+    "preexport": "npm run clean:gh && PATH_EXT_NAME='.html' next build",
+    "export": "next export && cp -r out/* gh-pages",
+    "postexport": "touch gh-pages/.nojekyll"
   },
   "repository": {
     "type": "git",
