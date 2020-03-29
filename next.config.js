@@ -50,7 +50,11 @@ const workboxOpts = {
         u.url = u.url.replace('../public/', '')
         return u
       })
-      manifest = [{ url: '/', revision: '' }].concat(manifest)
+      let home = {
+        url: '/',
+        revision: manifest.filter(u => u.url.endsWith('pages/index.js'))[0].url,
+      }
+      manifest = [home].concat(manifest)
       return {
         manifest: manifest,
       }
