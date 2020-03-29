@@ -10,7 +10,7 @@ import {
   Button,
 } from '@material-ui/core'
 import GitHubIcon from '@material-ui/icons/GitHub'
-import MenuIcon from '@material-ui/icons/Menu'
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import { Fragment } from 'react'
 import { Link } from '~pages/components/Link'
 import { useRouter } from 'next/router'
@@ -51,9 +51,9 @@ export const TopBar = () => {
               color="inherit"
               target="github-browser-pgp"
             >
-              <IconButton edge="start" color="inherit">
-                <GitHubIcon />
-              </IconButton>
+              <Button startIcon={<OpenInNewIcon />} color="inherit">
+                反馈问题
+              </Button>
             </MLink>
           </Tooltip>
         </Toolbar>
