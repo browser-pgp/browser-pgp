@@ -1,4 +1,16 @@
-import { AppBar, Toolbar, Typography, Tab, Tabs } from '@material-ui/core'
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Tab,
+  Tabs,
+  IconButton,
+  Tooltip,
+  Link as MLink,
+  Button,
+} from '@material-ui/core'
+import GitHubIcon from '@material-ui/icons/GitHub'
+import MenuIcon from '@material-ui/icons/Menu'
 import { Fragment } from 'react'
 import { Link } from '~pages/components/Link'
 import { useRouter } from 'next/router'
@@ -7,6 +19,7 @@ import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
   tabs: {
     paddingLeft: theme.spacing(5),
+    flexGrow: 1,
   },
 }))
 
@@ -32,6 +45,17 @@ export const TopBar = () => {
               />
             ))}
           </Tabs>
+          <Tooltip title="在新窗口中打开 Github 仓库" placement='left'>
+            <MLink
+              href="https://github.com/browser-pgp/browser-pgp"
+              color="inherit"
+              target="github-browser-pgp"
+            >
+              <IconButton edge="start" color="inherit">
+                <GitHubIcon />
+              </IconButton>
+            </MLink>
+          </Tooltip>
         </Toolbar>
       </AppBar>
     </Fragment>
