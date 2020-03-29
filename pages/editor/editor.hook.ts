@@ -1,5 +1,9 @@
 import { EditorState } from './editor.state'
-import { useStepNotification } from '~modules/utils/useStepNotification'
+import {
+  useStepNotification,
+  SilentError,
+  NotistackOnlyError,
+} from '~modules/utils/useStepNotification'
 import { useKeysSelect, KeyType } from './KeysSelect'
 import * as openpgp from 'openpgp'
 import { EditorState as EditorComponentState } from '~pages/components/Editor'
@@ -27,7 +31,7 @@ export const useEditor = () => {
       .then(async () => {
         let users = await ks.open(KeyType.Public)
         if (users.length < 1) {
-          throw new Error('未选择密钥')
+          throw new SilentError('未选择密钥')
         }
         let keys = await Promise.all(
           users.map(async u => {
@@ -58,7 +62,7 @@ export const useEditor = () => {
       .then(async () => {
         let users = await ks.open(KeyType.Private)
         if (users.length < 1) {
-          throw new Error('未选择密钥')
+          throw new SilentError('未选择密钥')
         }
         let user = users[0]
         let privateKey = await getUserPrivateKey(user)
@@ -83,7 +87,7 @@ export const useEditor = () => {
     const fn = async () => {
       let [user] = await ks.open(KeyType.Private)
       if (!user) {
-        throw new Error('未选择密钥')
+        throw new SilentError('未选择密钥')
       }
 
       let privateKey = await getUserPrivateKey(user)
@@ -99,7 +103,7 @@ export const useEditor = () => {
     }
     return Promise.resolve(setState(s => ({ ...s, pending: true })))
       .then(fn)
-      .then(...signStepNotice)
+      .catch(signStepNotice[1])
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
@@ -165,10 +169,7 @@ export const useEditor = () => {
           stepNotice = signStepNotice
         }
       })
-      .then(
-        () => stepNotice[0](),
-        err => stepNotice[1](err),
-      )
+      .catch(err => stepNotice[1](err))
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
