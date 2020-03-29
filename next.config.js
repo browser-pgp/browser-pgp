@@ -8,6 +8,8 @@ const withFonts = require('next-fonts')
 
 module.exports = withFonts({
   poweredByHeader: false,
+  assetPrefix:
+    process.env.NODE_ENV === 'production' ? process.env.PATH_PREFIX : '',
   env: envs,
   pageExtensions: ['page.tsx', 'api.ts'],
   strict: true,

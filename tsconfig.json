@@ -22,6 +22,6 @@
       "~libs/*": ["libs/*"]
     }
   },
-  "exclude": ["node_modules", ".next","public"],
+  "exclude": ["node_modules", ".next", "public", "gh-pages"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }
