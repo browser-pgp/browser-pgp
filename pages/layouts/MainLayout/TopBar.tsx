@@ -24,7 +24,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const Nav = (displayName: string, path: string) => ({ displayName, path })
-const navs = [Nav('联系人', '/'), Nav('编辑器', '/editor')]
+const navs = [
+  Nav('联系人', '/'),
+  Nav('编辑器', '/editor'),
+  Nav('远程同步', '/sync-config'),
+]
 
 export const TopBar = () => {
   const classes = useStyles()

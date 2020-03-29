@@ -45,6 +45,7 @@
     "next-offline": "^5.0.0",
     "notistack": "^0.9.9",
     "openpgp": "^4.10.1",
+    "pouchdb-adapter-http": "^7.2.1",
     "pouchdb-adapter-idb": "^7.2.1",
     "react-copy-to-clipboard": "^5.0.2",
     "react-hook-form": "^5.1.3",

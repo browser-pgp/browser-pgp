@@ -6343,6 +6343,17 @@ pouchdb-abstract-mapreduce@7.0.0:
     pouchdb-md5 "7.0.0"
     pouchdb-utils "7.0.0"
 
+pouchdb-adapter-http@^7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-http/-/pouchdb-adapter-http-7.2.1.tgz#3a286ca3d3c3b96eca22c832eb5e594e204e451f"
+  integrity sha512-+JAoRkqPLneyrOj7oLCnGKtE+aei8mBiN4Id3bWxmSSBOKCoTDDO4iLAsqOEQGqd2fe1qujh0zFhjeJgg2UMPA==
+  dependencies:
+    argsarray "0.0.1"
+    pouchdb-binary-utils "7.2.1"
+    pouchdb-errors "7.2.1"
+    pouchdb-fetch "7.2.1"
+    pouchdb-utils "7.2.1"
+
 pouchdb-adapter-idb@^7.2.1:
   version "7.2.1"
   resolved "https://registry.npm.taobao.org/pouchdb-adapter-idb/download/pouchdb-adapter-idb-7.2.1.tgz#43acdaccebd180c78e7dd45a6d207a6483653465"
