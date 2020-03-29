@@ -1,5 +1,8 @@
 import { KeyPasswordAskState } from './KeyPasswordAsk.state'
-import { useStepNotification } from '~modules/utils/useStepNotification'
+import {
+  useStepNotification,
+  NotistackOnlyError,
+} from '~modules/utils/useStepNotification'
 import * as openpgp from 'openpgp'
 
 export const useKeyPasswordAsk = () => {
@@ -23,7 +26,7 @@ export const useKeyPasswordAsk = () => {
         } = await openpgp.key.readArmored(state.key)
         let pass = await privateKey.decrypt(password)
         if (!pass) {
-          throw new Error('密码不正确')
+          throw new NotistackOnlyError('密码不正确')
         }
         close(password)
       })

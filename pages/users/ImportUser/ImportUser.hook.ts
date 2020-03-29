@@ -5,7 +5,10 @@ import {
 } from './ImportUser.state'
 import * as openpgp from 'openpgp'
 import { myDatabase } from '~libs/db'
-import { useStepNotification } from '~modules/utils/useStepNotification'
+import {
+  useStepNotification,
+  NotistackOnlyError,
+} from '~modules/utils/useStepNotification'
 import monaco from 'monaco-editor'
 import { v4 as UUIDV4 } from 'uuid'
 import { PGPUserDocType } from '~modules/pgp-user'
@@ -64,18 +67,18 @@ export const useImportUser = () => {
   ) => {
     if (!_publicKey) {
       changeEditorTab(EditorModel.PublicKey, editor)
-      throw new Error('缺少公钥')
+      throw new NotistackOnlyError('缺少公钥')
     }
     if (!_privateKey) {
       changeEditorTab(EditorModel.PrivateKey, editor)
-      throw new Error('缺少私钥')
+      throw new NotistackOnlyError('缺少私钥')
     }
     const publicKey = await openpgp.key
       .readArmored(_publicKey)
       .then(({ keys, err }) => {
         if (err?.[0]) {
           changeEditorTab(EditorModel.PublicKey, editor)
-          throw new Error(`公钥解析出现问题: ${err[0]?.message}`)
+          throw new NotistackOnlyError(`公钥解析出现问题: ${err[0]?.message}`)
         }
         return keys[0]
       })
@@ -84,7 +87,7 @@ export const useImportUser = () => {
       .then(({ keys, err }) => {
         if (err?.[0]) {
           changeEditorTab(EditorModel.PrivateKey, editor)
-          throw new Error(`私钥解析出现问题: ${err[0]?.message}`)
+          throw new NotistackOnlyError(`私钥解析出现问题: ${err[0]?.message}`)
         }
         return keys[0]
       })
@@ -92,7 +95,7 @@ export const useImportUser = () => {
       password = await keyPasswordAsk.open(_privateKey)
     }
     if (!password) {
-      throw new Error('缺少密码')
+      throw new NotistackOnlyError('缺少密码')
     }
     await privateKey.decrypt(password)
     let msg = UUIDV4()
@@ -105,7 +108,7 @@ export const useImportUser = () => {
       privateKeys: [privateKey],
     })
     if (msg !== dmsg) {
-      throw new Error('密钥对不匹配')
+      throw new NotistackOnlyError('密钥对不匹配')
     }
     return password
   }
@@ -123,7 +126,7 @@ export const useImportUser = () => {
         const crt = getEditorValue(EditorModel.RevocationCertificate)
         if (!publicKey) {
           changeEditorTab(EditorModel.PublicKey, editor)
-          throw new Error('缺少公钥')
+          throw new NotistackOnlyError('缺少公钥')
         }
         if (!!privateKey && !state.id) {
           await checkPrivateKey(editor, publicKey, privateKey)
@@ -134,7 +137,9 @@ export const useImportUser = () => {
           .then(({ keys, err }) => {
             if (err?.[0]) {
               changeEditorTab(EditorModel.PublicKey, editor)
-              throw new Error(`公钥解析出现问题: ${err[0]?.message}`)
+              throw new NotistackOnlyError(
+                `公钥解析出现问题: ${err[0]?.message}`,
+              )
             }
             return keys[0]
           })
@@ -150,7 +155,7 @@ export const useImportUser = () => {
             if (!privateKey) {
               let pass = await keyPasswordAsk.open(u.privateKey)
               if (!pass) {
-                throw new Error('删除私钥需要密码验证')
+                throw new NotistackOnlyError('删除私钥需要密码验证')
               }
             } else {
               await checkPrivateKey(editor, publicKey, privateKey)
@@ -165,7 +170,7 @@ export const useImportUser = () => {
         }
         if (u) {
           open(fingerprint)
-          throw new Error('公钥已存在, 打开"更新用户"')
+          throw new NotistackOnlyError('公钥已存在, 打开"更新用户"')
         }
 
         const userid = toUserId((await key.getPrimaryUser()).user.userId)
