@@ -9,6 +9,6 @@ const envs_keys = {
 }
 
 exports.envs = Object.keys(envs_keys).reduce((t, k) => {
-  t[k] = process.env[k] || envs_keys[k]
+  t[k] = process.env[k] = process.env[k] || envs_keys[k]
   return t
 }, {})

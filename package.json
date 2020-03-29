@@ -4,7 +4,9 @@
   "description": "",
   "main": "next.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preexport": "rm -rf gh-pages/docs/ .next && next build",
+    "export": "next export --outdir gh-pages/docs/",
+    "postexport": "touch gh-pages/docs/.nojekyll"
   },
   "repository": {
     "type": "git",
