@@ -45,9 +45,9 @@ export const TopBar = () => {
               />
             ))}
           </Tabs>
-          <Tooltip title="在新窗口中打开 Github 仓库" placement='left'>
+          <Tooltip title="去 Github Issue 反馈问题和需求" placement="left">
             <MLink
-              href="https://github.com/browser-pgp/browser-pgp"
+              href="https://github.com/browser-pgp/browser-pgp/issues"
               color="inherit"
               target="github-browser-pgp"
             >
