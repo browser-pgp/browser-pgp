@@ -4,6 +4,8 @@
   "description": "",
   "main": "next.config.js",
   "scripts": {
+    "prebuild": "rm -rf public/monaco-editor",
+    "pregh:clean": "npm run prebuild",
     "gh:clean": "rm -rf gh-pages/_next gh-pages/monaco-editor .next",
     "gh:push": "cd gh-pages/ && git add -A && git commit -m 'update' && git push",
     "preexport": "npm run gh:clean && PATH_EXT_NAME='.html' next build",
