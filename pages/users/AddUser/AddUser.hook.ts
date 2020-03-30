@@ -57,6 +57,7 @@ export const useAddUser = () => {
           privateKey: res.privateKeyArmored,
           revocationCertificate: res.revocationCertificate,
         })
+        close()
       })
       .then(...genUserKeyStepNotifications)
       .finally(() => {
