@@ -52,7 +52,9 @@ const workboxOpts = {
       })
       let home = {
         url: '/',
-        revision: manifest.filter(u => u.url.endsWith('pages/index.js'))[0].url,
+        revision: manifest
+          .filter(u => u.url.endsWith('pages/index.js'))[0]
+          .url.split('/')[3],
       }
       manifest = [home].concat(manifest)
       return {
@@ -61,9 +63,9 @@ const workboxOpts = {
     },
   ],
 }
-config = withOffline({
-  ...config,
-  workboxOpts: workboxOpts,
-})
+// config = withOffline({
+//   ...config,
+//   workboxOpts: workboxOpts,
+// })
 
 module.exports = config
