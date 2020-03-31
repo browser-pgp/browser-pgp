@@ -56,7 +56,7 @@ export const TopBar = () => {
               target="github-browser-pgp"
             >
               <Button startIcon={<OpenInNewIcon />} color="inherit">
-                反馈问题
+                反馈
               </Button>
             </MLink>
           </Tooltip>
