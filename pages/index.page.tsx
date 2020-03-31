@@ -1,1 +1,1 @@
-export { default } from './users/index.page'
+export { default } from './editor/index.page'
