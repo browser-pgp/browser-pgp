@@ -27,7 +27,7 @@ const Nav = (displayName: string, path: string) => ({ displayName, path })
 const navs = [
   Nav('联系人', '/'),
   Nav('编辑器', '/editor'),
-  Nav('远程同步', '/sync-config'),
+  Nav('远程同步', '/remote-sync'),
 ]
 
 export const TopBar = () => {
