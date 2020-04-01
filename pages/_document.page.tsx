@@ -40,6 +40,16 @@ class MyDocument extends Document {
       <html lang="zh-hans">
         <Head>
           <meta charSet="utf-8" />
+          <meta
+            name="description"
+            content="PGP in Browser is a pgp tool website Progressive Web App (PWA), not online, by use openpgp.js encrypt data in your browser, no ga track you"
+          />
+          <meta
+            name="keywords"
+            content="pgp,tool,browser,openpgp.js,online,pwa,Progressive Web App"
+          />
+          {/* /index.html is enough */}
+          <meta name="robots" content="noindex, nofollow" />
           {/* Use minimum-scale=1 to enable GPU rasterization */}
           <meta
             name="viewport"
