@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
 export const KeyInfo = ({ data }: { data: DisplayKeyInfo }) => {
   const classes = useStyles()
   return (
-    <Table>
+    <Table style={{ wordBreak: 'keep-all' }}>
       <TableBody>
         <TableRow>
           <TableCell>用户ID</TableCell>
