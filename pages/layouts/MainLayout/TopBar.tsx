@@ -1,54 +1,69 @@
+import React, { StatelessComponent } from 'react'
+import clsx from 'clsx'
+import { makeStyles } from '@material-ui/core'
 import {
   AppBar,
-  Toolbar,
-  Typography,
-  Tab,
-  Tabs,
   IconButton,
+  Toolbar,
+  Hidden,
+  colors,
+  AppBarProps,
+  Typography,
   Tooltip,
   Link as MLink,
   Button,
 } from '@material-ui/core'
-import GitHubIcon from '@material-ui/icons/GitHub'
+import MenuIcon from '@material-ui/icons/Menu'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
-import { Fragment } from 'react'
 import { Link } from '~pages/components/Link'
-import { useRouter } from 'next/router'
 
-import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
-  tabs: {
-    paddingLeft: theme.spacing(5),
+  root: {
+    boxShadow: 'none',
+  },
+  flexGrow: {
     flexGrow: 1,
+  },
+  trialButton: {
+    marginLeft: theme.spacing(2),
+    color: theme.palette.common.white,
+    backgroundColor: colors.green[600],
+    '&:hover': {
+      backgroundColor: colors.green[900],
+    },
+  },
+  trialIcon: {
+    marginRight: theme.spacing(1),
+  },
+  menuButton: {
+    marginRight: theme.spacing(1),
   },
 }))
 
-const Nav = (displayName: string, path: string) => ({ displayName, path })
-const navs = [
-  Nav('编辑器', '/'),
-  Nav('联系人', '/users'),
-  Nav('远程同步', '/remote-sync'),
-]
-
-export const TopBar = () => {
+export const TopBar: StatelessComponent<{
+  onOpenNavBarMobile: () => any
+} & AppBarProps> = ({ onOpenNavBarMobile, className, ...rest }) => {
   const classes = useStyles()
-  const router = useRouter()
+
   return (
-    <Fragment>
-      <AppBar position="sticky">
-        <Toolbar>
-          <Typography variant="h6">PGP in Browser</Typography>
-          <Tabs value={router.pathname} className={classes.tabs}>
-            {navs.map(nav => (
-              <Tab
-                key={nav.path}
-                label={nav.displayName}
-                value={nav.path}
-                component={Link}
-                href={nav.path}
-              />
-            ))}
-          </Tabs>
+    <AppBar {...rest} className={clsx(classes.root, className)} color="primary">
+      <Toolbar>
+        <Hidden lgUp>
+          <IconButton
+            className={classes.menuButton}
+            color="inherit"
+            onClick={onOpenNavBarMobile}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
+        <Typography variant="h6">
+          <Link href="/" color="inherit">
+            PGP in Browser
+          </Link>
+        </Typography>
+        <div className={classes.flexGrow} />
+        <Hidden smDown>
           <Tooltip title="去 Github Issue 反馈问题和需求" placement="left">
             <MLink
               href="https://github.com/browser-pgp/browser-pgp/issues"
@@ -60,8 +75,10 @@ export const TopBar = () => {
               </Button>
             </MLink>
           </Tooltip>
-        </Toolbar>
-      </AppBar>
-    </Fragment>
+        </Hidden>
+      </Toolbar>
+    </AppBar>
   )
 }
+
+export default TopBar

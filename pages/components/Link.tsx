@@ -1,8 +1,7 @@
 import NextLink from 'next/link'
 import { Link } from '@material-ui/core'
-import { StatelessComponent, forwardRef } from 'react'
+import { Component } from 'react'
 
-type Props = { href: string }
 const fakeBase = 'http://fake.start'
 
 const normalizeHref = (href: string): string => {
@@ -15,17 +14,27 @@ const normalizeHref = (href: string): string => {
   return href
 }
 
-const WrapLink = forwardRef<any, Props>((props, ref) => {
-  let href = props.href
-  if (process.env.NODE_ENV === 'production' && !!process.env.PATH_EXT_NAME) {
-    href = normalizeHref(href)
+type Props = { href: string; [k: string]: any }
+
+class WrapLink extends Component<Props> {
+  private href: string
+  constructor(props: Props, ctx) {
+    super(props, ctx)
+    let href = props.href
+    if (process.env.NODE_ENV === 'production' && !!process.env.PATH_EXT_NAME) {
+      href = normalizeHref(href)
+    }
+    this.href = href
   }
-  return (
-    <NextLink href={props.href} as={href} ref={ref}>
-      <Link {...{ ...props, href }}>{props.children}</Link>
-    </NextLink>
-  )
-})
+  render() {
+    const { props, href } = this
+    return (
+      <NextLink href={props.href} as={href}>
+        <Link {...{ ...props, href }}>{props.children}</Link>
+      </NextLink>
+    )
+  }
+}
 
 export { WrapLink as Link }
 export default WrapLink
