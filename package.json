@@ -55,8 +55,10 @@
     "unstated-next": "^1.1.0"
   },
   "dependencies": {
+    "@types/react-resize-detector": "^4.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-resize-detector": "^4.2.1",
     "rxjs-hooks": "^0.6.2",
     "uuid": "^7.0.2"
   }
