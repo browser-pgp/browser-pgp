@@ -1,4 +1,4 @@
-import React, { useState, StatelessComponent } from 'react'
+import React, { useState, StatelessComponent, Fragment } from 'react'
 import { makeStyles } from '@material-ui/core'
 import NavBar from './NavBar'
 import TopBar from './TopBar'
@@ -30,7 +30,7 @@ const Dashboard: StatelessComponent = props => {
   const [openNavBarMobile, setOpenNavBarMobile] = useState(false)
 
   return (
-    <>
+    <Fragment>
       <TopBar onOpenNavBarMobile={() => setOpenNavBarMobile(true)} />
       <NavBar
         onMobileClose={() => setOpenNavBarMobile(false)}
@@ -39,7 +39,7 @@ const Dashboard: StatelessComponent = props => {
       <div className={classes.container}>
         <div className={classes.content}>{props.children}</div>
       </div>
-    </>
+    </Fragment>
   )
 }
 
