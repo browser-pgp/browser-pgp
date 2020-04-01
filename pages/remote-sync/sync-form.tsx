@@ -48,7 +48,7 @@ export const SyncForm = () => {
         <Grid item>
           <TextField
             variant="outlined"
-            label="远程地址"
+            label="CouchDB 访问地址"
             placeholder="https://example.com"
             type="url"
             helperText="记得把当前站点加到 cors 名单中, 否则会出现跨域问题无法同步"
