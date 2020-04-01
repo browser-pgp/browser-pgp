@@ -44,6 +44,7 @@ export const Editor: React.StatelessComponent<Props> = ({
         handleWidth
         skipOnMount
         targetDomEl={f.current}
+        refreshMode="debounce"
         onResize={() => editor.state?.editor.layout()}
       />
     </Fragment>
