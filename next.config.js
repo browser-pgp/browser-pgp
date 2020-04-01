@@ -12,7 +12,7 @@ let config = {
     process.env.NODE_ENV === 'production' ? process.env.PATH_PREFIX : '',
   env: envs,
   pageExtensions: ['page.tsx', 'api.ts'],
-  strict: true,
+  // reactStrictMode: true,
   webpack: (config, options) => {
     for (let name in alias) {
       let dir = alias[name]
