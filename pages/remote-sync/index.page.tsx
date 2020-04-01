@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Paper,
 } from '@material-ui/core'
 
 import { SyncForm } from './sync-form'
@@ -36,18 +37,16 @@ export default () => {
   return (
     <SyncState.Provider>
       <MainLayout title="远程同步" inContainer>
-        <div>
-          <Grid container justify="center" spacing={2}>
-            <Grid item lg={10} md={10} xl={8} xs={12}>
-              <Card>
-                <CardHeader title="远程同步设置" subheader="" />
-                <CardContent style={{ paddingTop: 0 }}>
-                  <Config />
-                </CardContent>
-              </Card>
+        <Card>
+          <CardHeader title="远程同步设置" subheader="" />
+          <CardContent style={{ paddingTop: 0 }}>
+            <Grid container spacing={2}>
+              <Grid item lg={8} md={8} xl={8} xs={12}>
+                <Config />
+              </Grid>
             </Grid>
-          </Grid>
-        </div>
+          </CardContent>
+        </Card>
       </MainLayout>
     </SyncState.Provider>
   )
