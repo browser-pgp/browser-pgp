@@ -2,10 +2,10 @@ import { MainLayout } from '~pages/layouts'
 import { Editor } from '~pages/components/Editor'
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
   LinearProgress,
+  Grid,
+  ButtonGroup,
+  Paper,
 } from '@material-ui/core'
 import { useEditor } from './editor.hook'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -18,14 +18,13 @@ import FileCopyIcon from '@material-ui/icons/FileCopy'
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: 0,
-    '&:last-child': {
-      paddingBottom: 0,
-    },
-    // paddingBottom: theme.spacing(3),
+    height: '100%',
   },
-  editor: {
-    height: '80vh',
+  editorWrapper: {
+    flexGrow: 1,
+  },
+  btnWrapper: {
+    padding: theme.spacing(2),
   },
   hidden: {
     display: 'none',
@@ -34,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 
 export const EditorPage = () => {
   const classes = useStyles()
-  const { state, encrypt, decrypt, sign, verify, signOrVerify } = useEditor()
+  const { state, encrypt, decrypt, signOrVerify } = useEditor()
   const [{ editor }] = EditorState.useContainer()
   const { enqueueSnackbar } = useSnackbar()
   const [input, setInput] = useState('')
@@ -60,63 +59,53 @@ export const EditorPage = () => {
   }, [state.model])
 
   return (
-    <MainLayout title="编辑器">
-      <Card>
-        <CardActions>
-          <CopyToClipboard
-            text={input}
-            onCopy={() => enqueueSnackbar('复制成功')}
-          >
-            <Button variant="outlined" startIcon={<FileCopyIcon />}>
-              复制
+    <MainLayout title="编辑器" inContainer>
+      <Grid
+        container
+        direction="column"
+        className={classes.root}
+        component={Paper}
+      >
+        <Grid item className={classes.btnWrapper}>
+          <ButtonGroup>
+            <CopyToClipboard
+              text={input}
+              onCopy={() => enqueueSnackbar('复制成功')}
+            >
+              <Button startIcon={<FileCopyIcon />}>复制</Button>
+            </CopyToClipboard>
+            <Button
+              disabled={state.pending}
+              onClick={() => signOrVerify()}
+              startIcon={<EditIcon />}
+            >
+              签名/核对
             </Button>
-          </CopyToClipboard>
-          <Button
-            variant="outlined"
-            disabled={state.pending}
-            onClick={() => signOrVerify()}
-            startIcon={<EditIcon />}
-          >
-            签名/核对
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={state.pending}
-            onClick={() => encrypt()}
-            startIcon={<LockIcon />}
-          >
-            加密
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={state.pending}
-            onClick={() => decrypt()}
-            startIcon={<LockOpenIcon />}
-          >
-            解密
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={state.pending}
-            onClick={() => sign()}
-            className={classes.hidden}
-          >
-            签名
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={state.pending}
-            onClick={() => verify()}
-            className={classes.hidden}
-          >
-            查看签名
-          </Button>
-        </CardActions>
-        <LinearProgress style={state.pending ? {} : { visibility: 'hidden' }} />
-        <CardContent className={classes.root}>
-          <Editor classes={[classes.editor]} options={{ model: state.model }} />
-        </CardContent>
-      </Card>
+            <Button
+              disabled={state.pending}
+              onClick={() => encrypt()}
+              startIcon={<LockIcon />}
+            >
+              加密
+            </Button>
+            <Button
+              disabled={state.pending}
+              onClick={() => decrypt()}
+              startIcon={<LockOpenIcon />}
+            >
+              解密
+            </Button>
+          </ButtonGroup>
+        </Grid>
+        <Grid item>
+          <LinearProgress
+            style={state.pending ? {} : { visibility: 'hidden' }}
+          />
+        </Grid>
+        <Grid item className={classes.editorWrapper}>
+          <Editor options={{ model: state.model }} />
+        </Grid>
+      </Grid>
     </MainLayout>
   )
 }

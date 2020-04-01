@@ -7,7 +7,7 @@ import { MainLayout } from '~pages/layouts'
 export const UsersPage = () => {
   const users = useObservable(() => myDatabase.users.find().$)
   return (
-    <MainLayout title="联系人管理">
+    <MainLayout title="联系人管理" inContainer>
       {users === null && <LinearProgress />}
       <UserList users={users || []} />
     </MainLayout>

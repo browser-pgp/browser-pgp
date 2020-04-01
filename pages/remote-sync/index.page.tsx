@@ -35,17 +35,19 @@ import { SyncState } from './sync.state'
 export default () => {
   return (
     <SyncState.Provider>
-      <MainLayout title="远程同步">
-        <Grid container>
-          <Grid item xs={6}>
-            <Card>
-              <CardHeader title="远程同步设置" subheader="" />
-              <CardContent style={{ paddingTop: 0 }}>
-                <Config />
-              </CardContent>
-            </Card>
+      <MainLayout title="远程同步" inContainer>
+        <div>
+          <Grid container justify="center" spacing={2}>
+            <Grid item lg={10} md={10} xl={8} xs={12}>
+              <Card>
+                <CardHeader title="远程同步设置" subheader="" />
+                <CardContent style={{ paddingTop: 0 }}>
+                  <Config />
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
+        </div>
       </MainLayout>
     </SyncState.Provider>
   )
