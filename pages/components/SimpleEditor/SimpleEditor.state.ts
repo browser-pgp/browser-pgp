@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import * as monaco from 'monaco-editor'
+import { SimpleEditor } from "./SimpleEditor.class";
 
 const useEditorState = () => {
   return useState({
-    editor: null as monaco.editor.IStandaloneCodeEditor,
+    editor: null as SimpleEditor,
   })
 }
 

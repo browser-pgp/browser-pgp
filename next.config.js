@@ -3,7 +3,6 @@ const { envs } = require('./next.preset')
 
 const path = require('path')
 const alias = require('./tsconfig.alias').alias
-const MONACO_DIR = path.join(__dirname, './node_modules/monaco-editor')
 
 /**@type {any} */
 let config = {
@@ -20,19 +19,6 @@ let config = {
     }
     config.plugins = config.plugins || []
 
-    const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
-    config.module.rules.push({
-      test: /\.css$/,
-      include: MONACO_DIR,
-      use: ['style-loader', 'css-loader'],
-    })
-    config.plugins.push(
-      new MonacoWebpackPlugin({
-        publicPath: '/monaco-editor',
-        filename: '../public/monaco-editor/[name].worker.[contenthash].js',
-        languages: [],
-      }),
-    )
     return config
   },
 }

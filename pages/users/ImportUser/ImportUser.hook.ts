@@ -9,11 +9,11 @@ import {
   useStepNotification,
   NotistackOnlyError,
 } from '~modules/utils/useStepNotification'
-import monaco from 'monaco-editor'
 import { v4 as UUIDV4 } from 'uuid'
 import { PGPUserDocType } from '~modules/pgp-user'
 import { toUserId } from '~pages/users/KeyInfo'
 import { useKeyPasswordAsk } from '~pages/users/KeyPasswordAsk'
+import { SimpleEditor } from '~pages/components/SimpleEditor'
 
 export const useImportUser = () => {
   const [state, setState] = ImportUserState.useContainer()
@@ -60,7 +60,7 @@ export const useImportUser = () => {
       })
   }
   const checkPrivateKey = async (
-    editor?: monaco.editor.IStandaloneCodeEditor,
+    editor?: SimpleEditor,
     _publicKey: string = getEditorValue(EditorModel.PublicKey),
     _privateKey: string = getEditorValue(EditorModel.PrivateKey),
     password?: string,
@@ -115,7 +115,7 @@ export const useImportUser = () => {
   const getEditorValue = (m: EditorModel) => {
     return state.models[m].getValue()
   }
-  const importUser = async (editor?: monaco.editor.IStandaloneCodeEditor) => {
+  const importUser = async (editor?: SimpleEditor) => {
     if (state.pending) {
       return
     }
@@ -208,10 +208,7 @@ export const useImportUser = () => {
   const isShouldMakePublicKeyReadOnly = (v: EditorModel = state.focus) => {
     return v === EditorModel.PublicKey && !!state.id
   }
-  const changeEditorTab = (
-    v: EditorModel,
-    editor: monaco.editor.IStandaloneCodeEditor,
-  ) => {
+  const changeEditorTab = (v: EditorModel, editor: SimpleEditor) => {
     setViewState({
       ...viewState,
       [state.focus]: editor.saveViewState(),

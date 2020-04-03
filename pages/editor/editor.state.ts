@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react'
-import monaco from '~pages/components/Editor/MonacoEditor'
+import { SimpleEditor} from '~pages/components/SimpleEditor'
 
 const useEditorState = () => {
   const model = useMemo(() => {
-    return monaco.editor.createModel('')
+    return SimpleEditor.createModel('')
   }, [])
   return useState({
     pending: false,

@@ -1,5 +1,5 @@
 import { MainLayout } from '~pages/layouts'
-import { Editor } from '~pages/components/Editor'
+import { Editor } from '~pages/components/SimpleEditor'
 import {
   Button,
   LinearProgress,
@@ -111,7 +111,7 @@ export const EditorPage = () => {
 }
 
 import { EditorState as EditorPageState } from './editor.state'
-import { EditorState } from '~pages/components/Editor'
+import { EditorState } from '~pages/components/SimpleEditor'
 import { useEffect, useState } from 'react'
 import { KeysSelectProvider } from './KeysSelect'
 import { KeyInfoProvider } from '~pages/users/KeyInfo'

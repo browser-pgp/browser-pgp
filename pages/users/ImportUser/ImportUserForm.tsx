@@ -8,9 +8,12 @@ import {
   LinearProgress,
 } from '@material-ui/core'
 import { useImportUser } from './ImportUser.hook'
-import { Editor, EditorState } from '~pages/components/Editor'
+import {
+  Editor,
+  EditorState,
+  SimpleEditorConstructionOptions,
+} from '~pages/components/SimpleEditor'
 import { useKeyInfo } from '../KeyInfo'
-import monaco from 'monaco-editor'
 import { useState, Fragment, useEffect } from 'react'
 import { EditorModel } from './ImportUser.state'
 import { useDelUser } from '../DelUser'
@@ -44,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const options: monaco.editor.IStandaloneEditorConstructionOptions = {
+const options: SimpleEditorConstructionOptions = {
   fontSize: 14,
   minimap: { enabled: false },
 }

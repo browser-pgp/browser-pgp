@@ -1,5 +1,9 @@
 import { useState, useMemo } from 'react'
-import monaco from '~pages/components/Editor/MonacoEditor'
+import {
+  SimpleEditor,
+  SimpleTextModel,
+  ICodeEditorViewState,
+} from '~pages/components/SimpleEditor'
 
 export enum EditorModel {
   PublicKey = 'PublicKey',
@@ -9,9 +13,9 @@ export enum EditorModel {
 
 const useImportUserState = () => {
   let models = useMemo(() => {
-    let models: { [k: string]: monaco.editor.ITextModel } = {}
+    let models: { [k: string]: SimpleTextModel } = {}
     for (let key in EditorModel) {
-      models[key] = monaco.editor.createModel('')
+      models[key] = SimpleEditor.createModel('')
     }
     return models
   }, [])
@@ -25,7 +29,7 @@ const useImportUserState = () => {
 }
 
 const useImportUserEditorViewState = () => {
-  return useState<{ [k: string]: monaco.editor.ICodeEditorViewState }>({})
+  return useState<{ [k: string]: ICodeEditorViewState }>({})
 }
 
 import { createContainer } from 'unstated-next'

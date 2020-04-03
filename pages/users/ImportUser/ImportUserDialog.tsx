@@ -2,7 +2,7 @@ import { useImportUser } from './ImportUser.hook'
 
 import { Dialog } from '@material-ui/core'
 import { ImportUserForm } from './ImportUserForm'
-import { EditorState } from '~pages/components/Editor'
+import { EditorState } from '~pages/components/SimpleEditor'
 
 export const ImportUserDialog = () => {
   const { state, close } = useImportUser()
