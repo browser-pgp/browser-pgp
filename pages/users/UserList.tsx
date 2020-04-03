@@ -71,11 +71,13 @@ export const UserList: React.StatelessComponent<{
     return cols.map(col => col.opath(u))
   })
   return (
-    <MUIDatatables
-      title="联系人列表"
-      data={displayData}
-      columns={cols}
-      options={options}
-    />
+    <div style={{ wordBreak: 'keep-all' }}>
+      <MUIDatatables
+        title="联系人列表"
+        data={displayData}
+        columns={cols}
+        options={options}
+      />
+    </div>
   )
 }

@@ -6,6 +6,7 @@ export const createTableOptions = (
   ...options,
   download: false,
   print: false,
+  responsive: 'scrollMaxHeight',
 })
 
 export class Col<T> {

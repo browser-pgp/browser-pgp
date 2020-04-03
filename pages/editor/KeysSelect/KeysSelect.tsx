@@ -32,6 +32,7 @@ const cols: Col<PGPUserDucment>[] = [
 
 const useStyles = makeStyles(theme => ({
   table: {
+    wordBreak: 'keep-all',
     '& .MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded': {
       flexDirection: 'row-reverse',
     },

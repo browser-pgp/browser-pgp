@@ -40,6 +40,7 @@ class MyDocument extends Document {
       <html lang="zh-hans">
         <Head>
           <meta charSet="utf-8" />
+          <title>PGP in Browser</title>
           <meta
             name="description"
             content="PGP in Browser is a pgp tool website Progressive Web App (PWA), not online, by use openpgp.js encrypt data in your browser, no ga track you"
