@@ -58,6 +58,8 @@ export const SimpleEditor: StatelessComponent<Props> = ({
         onFocus={() => setElevation(2)}
         onBlur={() => setElevation(0)}
         className={clsx(classes.editor, ...propsClasses)}
+        // @ts-ignore
+        autoFocus
       />
     </Paper>
   )
