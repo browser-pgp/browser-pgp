@@ -47,7 +47,7 @@ export class SimpleEditor {
     this.model = model
     model.setValue()
   }
-  static createModel(value: '') {
+  static createModel(value: string='') {
     return new SimpleTextModel(value)
   }
 }
@@ -62,6 +62,7 @@ export class SimpleTextModel {
     if (this.editor) {
       this.editor.textarea.value = value
     }
+    this.handleChangeContent(value)
   }
   private listener: Array<(v: string) => any> = [
     (value: string) => {
