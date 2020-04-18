@@ -32,7 +32,7 @@ export const KeyInfoDialog = () => {
 
   return (
     <Dialog open={state.open} onClose={close} fullWidth maxWidth="sm">
-      <DialogTitle>公钥属性查看</DialogTitle>
+      <DialogTitle>{state.title || '公钥属性查看'}</DialogTitle>
       <DialogContent>{body}</DialogContent>
       <DialogActions>
         <Button onClick={close}>关闭</Button>

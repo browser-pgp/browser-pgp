@@ -1,11 +1,13 @@
 import { KeyInfoState, toDisplayKeyInfo } from './KeyInfo.state'
 import * as openpgp from 'openpgp'
 
+import { StatelessComponent } from "react";
+
 export const useKeyInfo = () => {
   const [state, setState] = KeyInfoState.useContainer()
 
-  const open = (pubKey: string) => {
-    setState(s => ({ ...s, pubKey, open: true, pending: true, err: '' }))
+  const open = (pubKey: string,title:React.ReactNode='') => {
+    setState(s => ({ ...s, pubKey, open: true, pending: true, err: '', title }))
     parsePubKey(pubKey).catch(err => {
       err = err?.[0] || err
       setState(s => ({

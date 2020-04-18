@@ -9,6 +9,7 @@ const useKeyInfoState = () => {
     pending: true,
     key: null as DisplayKeyInfo,
     err: '',
+    title: null as React.ReactNode,
   })
 }
 
