@@ -19,8 +19,8 @@
 
 1. 用户打开网页 http://example.com/login
 1. 页面上有一个网站的公钥, 用户需要将这个公钥导入自己 PGP 地址簿中, 在接下来的步骤中会用到
-1. 服务端生成一个魔法字符串作为 mid , 同时把生成时间保存为键值对, 然后返回用户这样一段 JSON `{"mid":"magic string for find generate time","auth":"https://example.com/auth"}`, 加密后显示在登录页面
-1. 用户使用应用公钥进行解密后得到 JSON 串, 填充 JSON 字段 `{"mid":"mid", "fingerprint":"fingerprint"}` 其中 `fingerprint` 为用户公钥指纹
+1. 服务端生成一个魔法字符串作为 mid , 同时把生成时间保存为键值对, 然后返回用户这样一段 JSON `{"mid":"magic string for find generate time","auth":"https://example.com/auth"}`
+1. 用户填充 JSON 字段 `{"mid":"mid", "fingerprint":"fingerprint"}` 其中 `fingerprint` 为用户公钥指纹
 1. 用户使用自己的私钥对 JSON 进行签名并使用网站应用的公钥进行加密
 1. 把加密后的内容发回给服务端指定的 `auth` 字段网址 https://example.com/auth , 可以使用 `POST` 和 `GET` 表单发送, 字段是 `content` , 接下来的工作由网站处理
 1. 服务端解密内容得到签名内容
