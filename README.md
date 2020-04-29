@@ -9,37 +9,23 @@
 
 ### 事先准备
 
+1. 网站生成 PGP 密钥对
 1. 用户生成 PGP 密钥对
-1. 用户将公钥和暗号(类似用户名)发给服务端保存, 如果暗号重复率过高(10 次以上)的话, 服务端可以拒绝这次保存, 暗号后续可以更改
+1. 用户和网站交换公钥, 如果网站没有用户则认证失败
 
 ### 用户认证
 
 假设服务端登录页面是: http://example.com/login
 
-1. 用户进入登录页面 http://example.com/login
-1. 登录页面有一个输入框, 要填的内容是对暗号的签名, 暗号是`暗号示例`, 对应的签名示例如下(输入框内容有三种方式填充):
-
-   ```txt
-   -----BEGIN PGP SIGNED MESSAGE-----
-   Hash: SHA512
-
-   暗号示例
-   -----BEGIN PGP SIGNATURE-----
-
-   iQEzBAEBCgAdFiEEbguszZ+xLtdag/ntiScQmfT4PvgFAl58tTkACgkQiScQmfT4
-   PvgGtwf+OKDs1fxAp0GNJskT/dOLJmVn1WsN5Fty+PLeA94btXDK/aEOR1jy9NHq
-   BpJW/qZ8UdNzmIYV9YuanhVaOzBK9vfJaWU2FdMAnPKmz00uZnf0ofLqZFwk2KIN
-   wCpLor0qtVTimLHMEDe6Rd7bkSAKKXfGIcW9m2Xdr815XLRd6K/7GKk94ASLZmpq
-   hVNvpbPWwezvuj5V1WqZd3plsyL91M8NavwGnIZ8mCgE03d0pkr3/Eb48ZEt8OsS
-   xPW1zoWAkwfUgOnMSt4fuhlSJG8Om2UazflyE4og/yCh+Uh+XjXKCs9ZRUHbmM4B
-   zYvqyXSDKw9Gwc8Z7eS5m6sjJT/pbg==
-   =bCgj
-   -----END PGP SIGNATURE-----
-
-   ```
-
-   - 从 url query 中的 signature 中获取, 这种方式可以让用户跳到像这个项目一样的 PGP 密钥管理网站进行快速登录
-   - 用户直接粘贴, 用户也可以在其他地方完成签名然后复制粘贴, 这可以在客户端中进行
-   - (尝试) 使用摄像头扫猫二维码进行认证
-
-1. 服务根据暗号获取用户公钥, 用这些公钥进行签名认证来确定用户, 确定用户之后发给用户一个 token 或者其他认证凭据用以后续操作
+1. 用户打开网页 http://example.com/login
+1. 页面上有一个网站的公钥, 用户需要将这个公钥导入自己 PGP 地址簿中, 在接下来的步骤中会用到
+1. 服务端生成一个魔法字符串作为 mid , 同时把生成时间保存为键值对, 然后返回用户这样一段 JSON `{"mid":"magic string for find generate time","auth":"https://example.com/auth"}`, 加密后显示在登录页面
+1. 用户使用应用公钥进行解密后得到 JSON 串, 填充 JSON 字段 `{"mid":"mid", "fingerprint":"fingerprint"}` 其中 `fingerprint` 为用户公钥指纹
+1. 用户使用自己的私钥对 JSON 进行签名并使用网站应用的公钥进行加密
+1. 把加密后的内容发回给服务端指定的 `auth` 字段网址 https://example.com/auth , 可以使用 `POST` 和 `GET` 表单发送, 字段是 `content` , 接下来的工作由网站处理
+1. 服务端解密内容得到签名内容
+1. 使用 mid 查找生成时的时间戳, 如果找不到则返回 mid 已过期的错误
+1. 验证 mid 生成时的时间戳与当前服务器时间戳的差值是否超过了 60s , 如果超过了 60s 则认证失败 (这个过期时间由服务端自行决定, 推荐 60s)
+1. 服务端根据指纹查找符合的公钥(可能会找到多个)
+1. 使用公钥匹配签名是否正确, 如果匹配成功的个数不为 `1` 则认证失败, 返回用户未被邀请的错误
+1. 网站应用可以设置 `cookie` 或者返回 `token` 给用户保存使用
