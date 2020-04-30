@@ -25,6 +25,7 @@ const useImportUserState = () => {
     models: models,
     focus: EditorModel.PublicKey,
     id: false as false | string,
+    cb: ():any => 0,
   })
 }
 

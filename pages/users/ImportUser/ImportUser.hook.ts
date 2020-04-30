@@ -24,15 +24,16 @@ export const useImportUser = () => {
   const keyPasswordAsk = useKeyPasswordAsk()
   const close = () => {
     setState(s => ({ ...s, open: false }))
+    setState(s=>(s.cb(),s))
   }
-  const open = (id?: string) => {
+  const open = (id?: string) => new Promise(rl=>{
     if (!id) {
       setState(s => {
         for (let k in s.models) {
           let m = s.models[k]
           m.setValue('')
         }
-        return { ...s, open: true, id: false, focus: EditorModel.PublicKey }
+        return { ...s, open: true, id: false, focus: EditorModel.PublicKey, cb: rl, }
       })
       return
     }
@@ -42,6 +43,7 @@ export const useImportUser = () => {
       pending: true,
       id: id,
       focus: EditorModel.PublicKey,
+      cb: rl,
     }))
     myDatabase.users
       .findOne()
@@ -58,7 +60,7 @@ export const useImportUser = () => {
       .finally(() => {
         setState(s => ({ ...s, pending: false }))
       })
-  }
+  })
   const checkPrivateKey = async (
     editor?: SimpleEditor,
     _publicKey: string = getEditorValue(EditorModel.PublicKey),
