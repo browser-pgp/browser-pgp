@@ -11,6 +11,7 @@ const useKeysSelectState = () => {
   return useState({
     open: false,
     keyType: KeyType.Public,
+    fingerprint: '',
     cb: (keys: PGPUserDucment[]): any => 0,
   })
 }

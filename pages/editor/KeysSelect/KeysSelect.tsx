@@ -25,12 +25,12 @@ const CustomToolbarSelect = (props: { onFinish: () => any }) => {
 }
 
 const cols: Col<PGPUserDucment>[] = [
-  new Col('名', u => u.name),
-  new Col('邮箱', u => u.email),
-  new Col('指纹', u => u.fingerprint),
+  new Col('名', (u) => u.name),
+  new Col('邮箱', (u) => u.email),
+  new Col('指纹', (u) => u.fingerprint),
 ]
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   table: {
     wordBreak: 'keep-all',
     '& .MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded': {
@@ -43,7 +43,10 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
+export const KeysSelect: StatelessComponent<{
+  keyType: KeyType
+  fingerprint?: ''
+}> = (props) => {
   const ks = useKeysSelect()
   const classes = useStyles()
   const users = useObservable(() => {
@@ -51,10 +54,13 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
     if (props.keyType === KeyType.Private) {
       q = q.exists('privateKey')
     }
+    if (props.fingerprint) {
+      q = q.where('fingerprint').eq(props.fingerprint)
+    }
     return q.$
   })
-  const displayData = (users || []).map(u => {
-    return cols.map(col => col.opath(u))
+  const displayData = (users || []).map((u) => {
+    return cols.map((col) => col.opath(u))
   })
   // store selectedUsers like class attr
   const attr = useMemo<{ selectedUsers: PGPUserDucment[] }>(
@@ -63,14 +69,14 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
   )
 
   const options = createTableOptions({
-    customToolbarSelect: rows => {
+    customToolbarSelect: (rows) => {
       return (
         <CustomToolbarSelect onFinish={() => ks.close(attr.selectedUsers)} />
       )
     },
     selectableRowsOnClick: true,
     onRowsSelect: (curr, all: { dataIndex: number }[]) => {
-      let selectedUsers = all.map(r => users[r.dataIndex])
+      let selectedUsers = all.map((r) => users[r.dataIndex])
       attr.selectedUsers = selectedUsers
       return all
     },
@@ -93,7 +99,7 @@ export const KeysSelect: StatelessComponent<{ keyType: KeyType }> = props => {
       {users === null && <LinearProgress />}
       <div
         className={classes.table}
-        onKeyPress={e => {
+        onKeyPress={(e) => {
           if (e.key === 'Enter' && attr.selectedUsers.length > 0) {
             ks.close(attr.selectedUsers)
           }
