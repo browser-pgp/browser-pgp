@@ -11,6 +11,7 @@ const navs = [
   Nav('编辑器', '/'),
   Nav('联系人', '/users'),
   Nav('远程同步', '/remote-sync'),
+  Nav('登录第三方应用', '/login'),
 ]
 
 const useStyles = makeStyles(theme => ({
