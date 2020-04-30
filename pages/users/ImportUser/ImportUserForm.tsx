@@ -16,10 +16,10 @@ import {
 import { useKeyInfo } from '../KeyInfo'
 import { useState, Fragment, useEffect } from 'react'
 import { EditorModel } from './ImportUser.state'
-import { useDelUser } from '../DelUser'
+import { DelUserBtn } from './DelUserBtn'
 
 import { makeStyles } from '@material-ui/core'
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   editor: {
     height: '40vh',
     minHeight: 375,
@@ -65,7 +65,6 @@ const tabs = [
 export const ImportUserForm = () => {
   const keyInfo = useKeyInfo()
   const u = useImportUser()
-  const del = useDelUser()
   const classes = useStyles()
   const [{ editor }] = EditorState.useContainer()
   useEffect(() => {
@@ -96,7 +95,7 @@ export const ImportUserForm = () => {
       }
     } else {
       let currentViewState = editor.saveViewState()
-      u.setViewState(s => ({
+      u.setViewState((s) => ({
         ...s,
         [u.state.focus]: currentViewState,
       }))
@@ -117,18 +116,7 @@ export const ImportUserForm = () => {
     <Fragment>
       <DialogTitle className={classes.head}>
         {u.state.id ? '更新用户' : '用户导入'}
-        {u.state.id && (
-          <Button
-            style={{ float: 'right' }}
-            onClick={() =>
-              del
-                .open(u.state.id as string)
-                .then(deleted => deleted && u.close())
-            }
-          >
-            删除
-          </Button>
-        )}
+        {u.state.id && <DelUserBtn />}
       </DialogTitle>
       <DialogContent className={classes.content}>
         <Tabs
@@ -139,7 +127,7 @@ export const ImportUserForm = () => {
           value={u.state.focus}
           onChange={(e, v) => u.changeEditorTab(v, editor)}
         >
-          {tabs.map(t => (
+          {tabs.map((t) => (
             <Tab
               className={classes.tab}
               key={t.value}
