@@ -63,7 +63,6 @@ export const TopBar: StatelessComponent<{
           </Link>
         </Typography>
         <div className={classes.flexGrow} />
-        <Hidden smDown>
           <Tooltip title="去 Github Issue 反馈问题和需求" placement="left">
             <MLink
               href="https://github.com/browser-pgp/browser-pgp/issues"
@@ -75,7 +74,6 @@ export const TopBar: StatelessComponent<{
               </Button>
             </MLink>
           </Tooltip>
-        </Hidden>
       </Toolbar>
     </AppBar>
   )
