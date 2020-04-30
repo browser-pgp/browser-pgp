@@ -12,7 +12,7 @@ import { useEffect } from 'react'
 
 export const AppItem = () => {
   const {
-    state: { app },
+    state: { app, pending },
     tryFindApp,
     importUser,
     pickOne,
@@ -30,7 +30,7 @@ export const AppItem = () => {
   switch (app.status) {
     case AppStatus.NotFound:
       return (
-        <ListItem button onClick={importUser}>
+        <ListItem button onClick={importUser} disabled={pending}>
           <ListItemText primary="没有指纹匹配的网站公钥, 点击导入公钥" />
         </ListItem>
       )
@@ -42,31 +42,25 @@ export const AppItem = () => {
       )
     case AppStatus.MultiPickedOne:
       return (
-        <ListItem button onClick={pickOne}>
+        <ListItem button onClick={pickOne} disabled={pending}>
           <ListItemText
             primary={app.userId}
             secondary="再次点击可选择另一个应用"
           />
           <ListItemSecondaryAction>
-            <Tooltip title="">
-              <IconButton>
-                <DetailsIcon />
-              </IconButton>
-            </Tooltip>
+            <DetailsIcon />
           </ListItemSecondaryAction>
         </ListItem>
       )
     case AppStatus.Multi:
       return (
-        <ListItem button onClick={pickOne}>
+        <ListItem button onClick={pickOne} disabled={pending}>
           <ListItemText
             primary="点击选择要登录的应用"
             secondary="有多个指纹匹配的应用, 需要进一步选择要登录的应用"
           />
           <ListItemSecondaryAction>
-            <IconButton>
-              <DetailsIcon />
-            </IconButton>
+            <DetailsIcon />
           </ListItemSecondaryAction>
         </ListItem>
       )

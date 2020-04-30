@@ -21,12 +21,20 @@ interface AppInfo {
 interface SelectUser {
   privkey: any
   userId: string
+  fingerprint: string
 }
 
 export interface Params {
   mid: string
   auth: string
   fingerprint: string
+}
+
+export enum EmptyInputFocus {
+  None,
+  App,
+  User,
+  Auth,
 }
 
 const defualtParams: Params = {
@@ -44,7 +52,9 @@ const useLoginState = (params: Params) => {
     app: null as null | AppInfo,
     selectedUser: null as null | SelectUser,
     content: '',
+    pending: false,
     params: params,
+    focus: EmptyInputFocus.None,
   })
 }
 

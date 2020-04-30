@@ -1,8 +1,14 @@
-import { LoginState, AppStatus, Params } from './login.state'
+import { LoginState, AppStatus, Params, EmptyInputFocus } from './login.state'
 import { useKeysSelect, KeyType } from '~pages/editor/KeysSelect'
 import { useImportUser } from '~pages/users/ImportUser'
+import { usePrivateKeyCache } from '~pages/users/PrivateKeyCache'
 import { myDatabase } from '~libs/db'
 import { PGPUserDocType } from '~modules/pgp-user'
+import * as openpgp from 'openpgp'
+import {
+  NotistackOnlyError,
+  useStepNotification,
+} from '~modules/utils/useStepNotification'
 
 function formatName(u: PGPUserDocType) {
   return u.name + (u.email ? ` <${u.email}>` : '')
@@ -12,6 +18,9 @@ export const useLogin = () => {
   const [state, setState] = LoginState.useContainer()
   const ks = useKeysSelect()
   const ui = useImportUser()
+  const { getUserPrivateKey } = usePrivateKeyCache()
+  const ssss = useStepNotification('dddd')
+
   const tryFindApp = async () => {
     const fingerprint = state.params.fingerprint.toLowerCase()
     if (!fingerprint) {
@@ -68,6 +77,7 @@ export const useLogin = () => {
         return
     }
   }
+
   const selectUser = async () => {
     const u = await ks.open(KeyType.Private).then((users) => {
       return users[0]
@@ -80,9 +90,11 @@ export const useLogin = () => {
       selectedUser: {
         privkey: u.privateKey,
         userId: u.name + (u.email ? ` <${u.email}>` : ''),
+        fingerprint: u.fingerprint,
       },
     }))
   }
+
   const pickOne = async () => {
     const u = await ks
       .open(KeyType.Public, state.params.fingerprint)
@@ -99,10 +111,12 @@ export const useLogin = () => {
       },
     }))
   }
+
   const importUser = async () => {
     await ui.open()
     await tryFindApp()
   }
+
   const updateParams = (k: keyof Params) => (v: string) => {
     setState((s) => ({
       ...s,
@@ -112,6 +126,70 @@ export const useLogin = () => {
       },
     }))
   }
+
+  const setLoginContent = async () => {
+    if (!state.selectedUser) {
+      setState((s) => ({ ...s, focus: EmptyInputFocus.User }))
+      throw new NotistackOnlyError('未选择登录帐号')
+    }
+    if (!state.app.pubkey) {
+      setState((s) => ({ ...s, focus: EmptyInputFocus.App }))
+      throw new NotistackOnlyError('未选择应用')
+    }
+    if (!state.params.auth) {
+      setState((s) => ({ ...s, focus: EmptyInputFocus.Auth }))
+      throw new NotistackOnlyError('登录地址不能为空')
+    }
+    const u = state.selectedUser
+    async function signData(data: { mid: string; fingerprint: string }) {
+      const privateKey = await getUserPrivateKey({
+        privateKey: state.selectedUser.privkey,
+      })
+      const msg = await openpgp.message.fromText(JSON.stringify(data))
+      const signResult = await openpgp.sign({
+        message: msg,
+        privateKeys: [privateKey],
+      })
+      return signResult.data
+    }
+    async function encryptData(data: string) {
+      const {
+        err,
+        keys: [pubkey],
+      } = await openpgp.key.readArmored(state.app.pubkey)
+      if (err?.length) {
+        throw err[0]
+      }
+      let msg = await openpgp.message.fromText(data)
+      let encryptResult = await openpgp.encrypt({
+        message: msg,
+        publicKeys: [pubkey],
+      })
+      return encryptResult.data
+    }
+    let data = { mid: state.params.mid, fingerprint: u.fingerprint }
+    let t = await signData(data)
+    t = await encryptData(t)
+    setState((s) => ({ ...s, content: t }))
+    // 等待下次状态更新完成
+    await new Promise((rl) => setState((s) => (rl(), s)))
+  }
+
+  const postForm = (form: HTMLFormElement) => {
+    if (state.pending) {
+      return
+    }
+    return Promise.resolve(setState((s) => ({ ...s, pending: true })))
+      .then(async () => {
+        await setLoginContent()
+        form.submit()
+      })
+      .then(...ssss)
+      .finally(() => {
+        setState((s) => ({ ...s, pending: false }))
+      })
+  }
+
   return {
     state,
     setState,
@@ -120,5 +198,6 @@ export const useLogin = () => {
     importUser,
     pickOne,
     updateParams,
+    postForm,
   }
 }

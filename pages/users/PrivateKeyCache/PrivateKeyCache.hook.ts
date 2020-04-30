@@ -7,10 +7,8 @@ export const usePrivateKeyCache = () => {
   const [cache, setCache] = PrivateKeyCacheState.useContainer()
   const keyPasswordAsk = useKeyPasswordAsk()
 
-  async function getUserPrivateKey(
-    user: Pick<PGPUserDocType, 'fingerprint' | 'privateKey'>,
-  ) {
-    if (!cache[user.fingerprint]) {
+  async function getUserPrivateKey(user: Pick<PGPUserDocType, 'privateKey'>) {
+    if (!cache[user.privateKey]) {
       let p = Promise.resolve().then(async () => {
         let key = user.privateKey
         let password = await keyPasswordAsk.open(key)
@@ -19,10 +17,10 @@ export const usePrivateKeyCache = () => {
         await privateKey.decrypt(password)
         return privateKey
       })
-      setCache(s => ({ ...s, [user.fingerprint]: p }))
+      setCache((s) => ({ ...s, [user.privateKey]: p }))
       return p
     }
-    return cache[user.fingerprint]
+    return cache[user.privateKey]
   }
 
   return {
