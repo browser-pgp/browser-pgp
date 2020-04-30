@@ -1,6 +1,6 @@
 {
   "name": "browser-pgp",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "",
   "main": "next.config.js",
   "scripts": {
