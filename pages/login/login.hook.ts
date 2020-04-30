@@ -145,7 +145,7 @@ export const useLogin = () => {
       const privateKey = await getUserPrivateKey({
         privateKey: state.selectedUser.privkey,
       })
-      const msg = await openpgp.message.fromText(JSON.stringify(data))
+      const msg = await openpgp.cleartext.fromText(JSON.stringify(data))
       const signResult = await openpgp.sign({
         message: msg,
         privateKeys: [privateKey],
