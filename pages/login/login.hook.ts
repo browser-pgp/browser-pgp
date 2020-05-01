@@ -19,7 +19,6 @@ export const useLogin = () => {
   const ks = useKeysSelect()
   const ui = useImportUser()
   const { getUserPrivateKey } = usePrivateKeyCache()
-  const ssss = useStepNotification('dddd')
 
   const tryFindApp = async () => {
     const fingerprint = state.params.fingerprint.toLowerCase()
@@ -175,6 +174,7 @@ export const useLogin = () => {
     await new Promise((rl) => setState((s) => (rl(), s)))
   }
 
+  const authStepNotifiactions = useStepNotification('认证签名并加密')
   const postForm = (form: HTMLFormElement) => {
     if (state.pending) {
       return
@@ -184,7 +184,7 @@ export const useLogin = () => {
         await setLoginContent()
         form.submit()
       })
-      .then(...ssss)
+      .then(...authStepNotifiactions)
       .finally(() => {
         setState((s) => ({ ...s, pending: false }))
       })

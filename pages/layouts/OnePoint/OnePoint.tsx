@@ -8,14 +8,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const OnePoint: StatelessComponent = (props) => {
+export const OnePoint: StatelessComponent<{ center?: boolean }> = (props) => {
   const classes = useStyles()
   return (
     <Grid
       className={classes.root}
       container
       direction="column"
-      justify="center"
+      {...(props.center ? { justify: 'center' } : {})}
     >
       <Grid item>{props.children}</Grid>
     </Grid>

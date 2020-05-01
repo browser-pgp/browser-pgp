@@ -9,13 +9,17 @@ import {
   ListItemText,
   Divider,
   TextField,
+  ButtonGroup,
+  Tooltip,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core'
 import { StatelessComponent, useState, useRef, useCallback } from 'react'
 import { useLogin } from './login.hook'
 import { AppItem } from './AppItem'
 import { IntrudctionIconLink } from './IntrudctionIconLink'
-import { EmptyInputFocus } from './login.state'
+import { EmptyInputFocus, DisplayMode } from './login.state'
+import { RegisterProtocolBtn } from './RegisterProtocolBtn'
+import { InputPGPAuthUrlBtn } from './InputPGPAuthUrlBtn'
 
 const useStyles = makeStyles(() => ({
   list: {
@@ -36,10 +40,6 @@ export const LoginCard: StatelessComponent = () => {
   const { state, selectUser, updateParams, postForm } = useLogin()
   const pauth = state.params
   const ref = useRef<HTMLFormElement>()
-  const [{ showUpdateAuthInput, showUpdateMidInput }] = useState({
-    showUpdateAuthInput: !pauth.auth,
-    showUpdateMidInput: !pauth.mid,
-  })
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     const form = ref.current
@@ -60,12 +60,12 @@ export const LoginCard: StatelessComponent = () => {
         <CardHeader
           className={classes.header}
           title="登录"
-          subheader={showUpdateAuthInput ? '手动登录' : pauth.auth}
+          subheader={state.mode === DisplayMode.Input ? '手动登录' : pauth.auth}
           action={<IntrudctionIconLink />}
         />
         <CardContent>
           <List className={classes.list}>
-            {showUpdateAuthInput && (
+            {state.mode === DisplayMode.Input && (
               <ListItem className={classes.itemIncludeInput}>
                 <TextField
                   label="登录地址"
@@ -78,11 +78,11 @@ export const LoginCard: StatelessComponent = () => {
                 />
               </ListItem>
             )}
-            {showUpdateMidInput && (
+            {state.mode === DisplayMode.Input && (
               <ListItem className={classes.itemIncludeInput}>
                 <TextField
                   label="mid"
-                  helperText="一段由登录方生成的无意义的魔法字符串"
+                  helperText="一段由应用方生成的无意义的魔法字符串"
                   fullWidth
                   variant="outlined"
                   disabled={state.pending}
@@ -101,13 +101,17 @@ export const LoginCard: StatelessComponent = () => {
               <ListItemText
                 primary={state.selectedUser?.userId || '点击选择要登录的帐号'}
                 secondary={
-                  state.selectedUser?.userId ? '将要登录的帐号' : '等待选择中'
+                  state.selectedUser?.userId ? '点击切换登录帐号' : '等待选择中'
                 }
               />
             </ListItem>
           </List>
         </CardContent>
         <CardActions>
+          <ButtonGroup size="large" style={{ whiteSpace: 'nowrap' }}>
+            <RegisterProtocolBtn />
+            <InputPGPAuthUrlBtn />
+          </ButtonGroup>
           <Button
             fullWidth
             size="large"

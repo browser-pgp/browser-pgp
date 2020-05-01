@@ -43,6 +43,11 @@ const defualtParams: Params = {
   fingerprint: '',
 }
 
+export enum DisplayMode {
+  Auto,
+  Input,
+}
+
 const useLoginState = (params: Params) => {
   params = {
     ...defualtParams,
@@ -55,6 +60,7 @@ const useLoginState = (params: Params) => {
     pending: false,
     params: params,
     focus: EmptyInputFocus.None,
+    mode: DisplayMode.Auto,
   })
 }
 
