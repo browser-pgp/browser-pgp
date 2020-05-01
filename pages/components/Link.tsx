@@ -4,7 +4,7 @@ import { Component } from 'react'
 
 const fakeBase = 'http://fake.start'
 
-const normalizeHref = (href: string): string => {
+export const normalizeHref = (href: string): string => {
   let u = new URL(href, fakeBase)
   if (u.pathname !== '/') {
     u.pathname = u.pathname + process.env.PATH_EXT_NAME

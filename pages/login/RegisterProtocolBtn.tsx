@@ -1,8 +1,9 @@
 import { Tooltip, Button } from '@material-ui/core'
 import { useMemo, useState, forwardRef } from 'react'
+import { normalizeHref } from '~pages/components/Link'
 
 const Protocol = 'web+pgpauth'
-const ProtocolHandler = '/login.html?url=%s'
+const ProtocolHandler = normalizeHref('/login') + '?url=%s'
 
 export const RegisterProtocolBtn = forwardRef((props, ref) => {
   const dealed = useMemo(() => {
