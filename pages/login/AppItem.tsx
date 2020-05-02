@@ -12,14 +12,14 @@ import { useEffect } from 'react'
 
 export const AppItem = () => {
   const {
-    state: { app, pending },
+    state: { app, pending, params },
     tryFindApp,
     importUser,
     pickOne,
   } = useLogin()
   useEffect(() => {
     tryFindApp()
-  }, [])
+  }, [params.fingerprint])
   if (app === null) {
     return (
       <ListItem button disabled>
