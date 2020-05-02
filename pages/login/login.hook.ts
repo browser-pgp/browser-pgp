@@ -140,7 +140,11 @@ export const useLogin = () => {
       throw new NotistackOnlyError('登录地址不能为空')
     }
     const u = state.selectedUser
-    async function signData(data: { mid: string; fingerprint: string }) {
+    async function signData(data: {
+      mid: string
+      fingerprint: string
+      auth: string
+    }) {
       const privateKey = await getUserPrivateKey({
         privateKey: state.selectedUser.privkey,
       })
@@ -166,7 +170,11 @@ export const useLogin = () => {
       })
       return encryptResult.data
     }
-    let data = { mid: state.params.mid, fingerprint: u.fingerprint }
+    let data = {
+      mid: state.params.mid,
+      auth: state.params.auth,
+      fingerprint: u.fingerprint,
+    }
     let t = await signData(data)
     t = await encryptData(t)
     setState((s) => ({ ...s, content: t }))
