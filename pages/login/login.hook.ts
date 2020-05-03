@@ -21,7 +21,7 @@ export const useLogin = () => {
   const { getUserPrivateKey } = usePrivateKeyCache()
 
   const tryFindApp = async () => {
-    const fingerprint = state.params.fingerprint.toLowerCase()
+    const fingerprint = state.params.fingerprint?.toLowerCase()
     if (!fingerprint) {
       setState((s) => ({
         ...s,

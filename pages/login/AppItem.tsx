@@ -37,7 +37,7 @@ export const AppItem = () => {
     case AppStatus.Found:
       return (
         <ListItem button>
-          <ListItemText primary={app.userId} secondary="将要登录的应用" />
+          <ListItemText primary={app.userId} secondary="登录应用" />
         </ListItem>
       )
     case AppStatus.MultiPickedOne:

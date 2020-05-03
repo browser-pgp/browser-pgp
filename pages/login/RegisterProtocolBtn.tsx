@@ -36,7 +36,7 @@ export const RegisterProtocolBtn = forwardRef((props, ref) => {
         placement="top"
       >
         <Button {...props} onClick={registerProtocol}>
-          设为默认
+          注册应用
         </Button>
       </Tooltip>
     )

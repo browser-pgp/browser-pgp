@@ -1,6 +1,6 @@
 import { Button, Tooltip } from '@material-ui/core'
 import { useRouter } from 'next/router'
-
+import LinkIcon from '@material-ui/icons/Link'
 export const InputPGPAuthUrlBtn = (props) => {
   const router = useRouter()
   const handleInput = () => {
@@ -18,7 +18,7 @@ export const InputPGPAuthUrlBtn = (props) => {
   }
   return (
     <Tooltip title="粘贴 web+pgpauth:login 开头的认证链接" placement="top">
-      <Button {...props} onClick={handleInput}>
+      <Button {...props} startIcon={<LinkIcon />} onClick={handleInput}>
         粘贴链接
       </Button>
     </Tooltip>

@@ -49,6 +49,7 @@ import { KeysSelectProvider } from '~pages/editor/KeysSelect'
 import { LoginState } from './login.state'
 import { ImportUserProvider } from '~pages/users/ImportUser'
 import { KeyInfoProvider } from '~pages/users/KeyInfo'
+import { QRScannerProvider } from './QRScanner'
 export default () => {
   const router = useRouter()
   const parmas = useMemo(() => getParams(router), [])
@@ -57,7 +58,9 @@ export default () => {
       <ImportUserProvider>
         <KeysSelectProvider>
           <LoginState.Provider initialState={parmas}>
-            <LoginPage />
+            <QRScannerProvider>
+              <LoginPage />
+            </QRScannerProvider>
           </LoginState.Provider>
         </KeysSelectProvider>
       </ImportUserProvider>

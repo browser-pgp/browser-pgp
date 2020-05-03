@@ -10,28 +10,48 @@ import {
   Divider,
   TextField,
   ButtonGroup,
-  Tooltip,
+  Grid,
 } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core'
-import { StatelessComponent, useState, useRef, useCallback } from 'react'
+import { StatelessComponent, useRef, useMemo, Fragment } from 'react'
 import { useLogin } from './login.hook'
 import { AppItem } from './AppItem'
 import { IntrudctionIconLink } from './IntrudctionIconLink'
-import { EmptyInputFocus, DisplayMode } from './login.state'
+import { DisplayMode } from './login.state'
 import { RegisterProtocolBtn } from './RegisterProtocolBtn'
 import { InputPGPAuthUrlBtn } from './InputPGPAuthUrlBtn'
+import { QRScannerBtn } from './QRScannerBtn'
 
-const useStyles = makeStyles(() => ({
+const ShowAuth = (pauth: { auth: string }) => {
+  const domain = useMemo(() => {
+    try {
+      let u = new URL(pauth.auth)
+      return u.origin
+    } catch (e) {
+      return ''
+    }
+  }, [pauth.auth])
+  return <Fragment>{domain}</Fragment>
+}
+
+import { makeStyles } from '@material-ui/core'
+const useStyles = makeStyles((theme) => ({
   list: {
     paddingTop: 0,
     paddingBottom: 0,
   },
   header: {
-    paddingBottom: 0,
+    // paddingBottom: 0,
   },
   itemIncludeInput: {
     paddingLeft: 0,
     paddingRight: 0,
+  },
+  sbtns: {
+    marginTop: theme.spacing(1),
+  },
+  main: {
+    padding: 0,
+    overflow: 'auto',
   },
 }))
 
@@ -39,6 +59,7 @@ export const LoginCard: StatelessComponent = () => {
   const classes = useStyles()
   const { state, selectUser, updateParams, postForm } = useLogin()
   const pauth = state.params
+
   const ref = useRef<HTMLFormElement>()
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -51,7 +72,6 @@ export const LoginCard: StatelessComponent = () => {
 
   const userInput = useRef()
   const authInput = useRef()
-  const appInput = useRef()
 
   return (
     <form action={pauth.auth} method="POST" ref={ref} onSubmit={handleSubmit}>
@@ -60,13 +80,13 @@ export const LoginCard: StatelessComponent = () => {
         <CardHeader
           className={classes.header}
           title="登录"
-          subheader={state.mode === DisplayMode.Input ? '手动登录' : pauth.auth}
           action={<IntrudctionIconLink />}
         />
-        <CardContent>
+        <Divider />
+        <CardContent className={classes.main}>
           <List className={classes.list}>
-            {state.mode === DisplayMode.Input && (
-              <ListItem className={classes.itemIncludeInput}>
+            {state.mode === DisplayMode.Input ? (
+              <ListItem divider>
                 <TextField
                   label="登录地址"
                   helperText="示例: https://example.com/auth"
@@ -77,9 +97,16 @@ export const LoginCard: StatelessComponent = () => {
                   ref={authInput}
                 />
               </ListItem>
+            ) : (
+              <ListItem divider>
+                <ListItemText
+                  primary={<ShowAuth auth={pauth.auth} />}
+                  secondary="登录地址"
+                />
+              </ListItem>
             )}
             {state.mode === DisplayMode.Input && (
-              <ListItem className={classes.itemIncludeInput}>
+              <ListItem divider>
                 <TextField
                   label="mid"
                   helperText="一段由应用方生成的无意义的魔法字符串"
@@ -107,21 +134,33 @@ export const LoginCard: StatelessComponent = () => {
             </ListItem>
           </List>
         </CardContent>
+        <Divider />
         <CardActions>
-          <ButtonGroup size="large" style={{ whiteSpace: 'nowrap' }}>
-            <RegisterProtocolBtn />
-            <InputPGPAuthUrlBtn />
-          </ButtonGroup>
-          <Button
-            fullWidth
-            size="large"
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={state.pending}
-          >
-            登录
-          </Button>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                size="large"
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={state.pending}
+              >
+                登录
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <ButtonGroup
+                fullWidth
+                size="large"
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                <RegisterProtocolBtn />
+                <InputPGPAuthUrlBtn />
+                <QRScannerBtn />
+              </ButtonGroup>
+            </Grid>
+          </Grid>
         </CardActions>
       </Card>
     </form>
