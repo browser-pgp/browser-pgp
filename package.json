@@ -4,7 +4,7 @@
   "description": "",
   "main": "next.config.js",
   "scripts": {
-    "prebuild": "exit 0",
+    "prebuild": "cp node_modules/qr-scanner/qr-scanner-worker.min.js* public/js-worker/",
     "pregh:clean": "npm run prebuild",
     "gh:clean": "rm -rf gh-pages/_next .next",
     "gh:push": "cd gh-pages/ && git add -A && git commit -m 'update' && git push",

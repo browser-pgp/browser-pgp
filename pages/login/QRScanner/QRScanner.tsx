@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import QrScanner from 'qr-scanner'
-import { useQRScanner, ScanStatus } from './QRScanner.hook'
+QrScanner.WORKER_PATH = 'js-worker/qr-scanner-worker.min.js'
+import { useQRScanner } from './QRScanner.hook'
 
 export const QRScanner = () => {
   const v = useRef()
