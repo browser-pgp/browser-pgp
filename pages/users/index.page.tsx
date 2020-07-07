@@ -18,7 +18,7 @@ import { AddUserProvider } from './AddUser'
 import { DelUserProvider } from './DelUser'
 import { KeyInfoProvider } from './KeyInfo'
 import { ImportUserProvider } from './ImportUser'
-export default () => {
+export default function Page() {
   return (
     <AddUserProvider>
       <DelUserProvider>

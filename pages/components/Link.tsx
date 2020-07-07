@@ -7,10 +7,10 @@ const fakeBase = 'http://fake.start'
 export const normalizeHref = (href: string): string => {
   let u = new URL(href, fakeBase)
   if (u.pathname !== '/') {
-    u.pathname = u.pathname + process.env.PATH_EXT_NAME
+    u.pathname = u.pathname + process.env.NEXT_PUBLIC_PATH_EXT_NAME
   }
   href = u.toString()
-  href = href.replace(fakeBase, process.env.PATH_PREFIX)
+  href = href.replace(fakeBase, process.env.NEXT_PUBLIC_PATH_PREFIX)
   return href
 }
 
@@ -21,7 +21,7 @@ class WrapLink extends Component<Props> {
   constructor(props: Props, ctx) {
     super(props, ctx)
     let href = props.href
-    if (process.env.NODE_ENV === 'production' && !!process.env.PATH_EXT_NAME) {
+    if (process.env.NODE_ENV === 'production' && !!process.env.NEXT_PUBLIC_PATH_EXT_NAME) {
       href = normalizeHref(href)
     }
     this.href = href

@@ -33,7 +33,7 @@ export const Config = () => {
 
 import { SyncState } from './sync.state'
 
-export default () => {
+export default function Page() {
   return (
     <SyncState.Provider>
       <MainLayout title="远程同步" inContainer>

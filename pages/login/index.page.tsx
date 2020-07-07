@@ -50,7 +50,7 @@ import { LoginState } from './login.state'
 import { ImportUserProvider } from '~pages/users/ImportUser'
 import { KeyInfoProvider } from '~pages/users/KeyInfo'
 import { QRScannerProvider } from './QRScanner'
-export default () => {
+export default function Page() {
   const router = useRouter()
   const parmas = useMemo(() => getParams(router), [])
   return (

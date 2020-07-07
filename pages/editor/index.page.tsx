@@ -115,7 +115,7 @@ import { EditorState } from '~pages/components/SimpleEditor'
 import { useEffect, useState } from 'react'
 import { KeysSelectProvider } from './KeysSelect'
 import { KeyInfoProvider } from '~pages/users/KeyInfo'
-export default () => {
+export default function Page() {
   return (
     <EditorPageState.Provider>
       <EditorState.Provider>
