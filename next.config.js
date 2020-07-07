@@ -1,26 +1,12 @@
 // @ts-check
-const { envs } = require('./next.preset')
-
-const path = require('path')
-const alias = require('./tsconfig.alias').alias
 
 /**@type {any} */
 let config = {
   poweredByHeader: false,
   assetPrefix:
-    process.env.NODE_ENV === 'production' ? process.env.PATH_PREFIX : '',
-  env: envs,
+    (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_PATH_PREFIX) || '',
   pageExtensions: ['page.tsx', 'api.ts'],
   // reactStrictMode: true,
-  webpack: (config, options) => {
-    for (let name in alias) {
-      let dir = alias[name]
-      config.resolve.alias[name] = path.join(__dirname, dir)
-    }
-    config.plugins = config.plugins || []
-
-    return config
-  },
 }
 
 const withFonts = require('next-fonts')
