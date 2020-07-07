@@ -6794,10 +6794,9 @@ q@^1.1.2:
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
-qr-scanner@^1.1.1:
+"qr-scanner@git+https://github.com/shynome/qr-scanner.git":
   version "1.1.1"
-  resolved "https://registry.yarnpkg.com/qr-scanner/-/qr-scanner-1.1.1.tgz#49775d3992733b5198f01a9aa65225962b0cb17d"
-  integrity sha512-vZmtaIpxx4rqnrg4iX62pQJ12bcIpfTEe/hL4Pr5PwQ/fih8W+ErfAZVFnnrdipeDC6L+5BfzMIqs/s6SYi4WA==
+  resolved "git+https://github.com/shynome/qr-scanner.git#d890a42a65a9e18d1a64f535e49fce94dfc79116"
 
 qs@6.7.0:
   version "6.7.0"

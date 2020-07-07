@@ -47,7 +47,7 @@
     "openpgp": "^4.10.4",
     "pouchdb-adapter-http": "^7.2.1",
     "pouchdb-adapter-idb": "^7.2.1",
-    "qr-scanner": "^1.1.1",
+    "qr-scanner": "git+https://github.com/shynome/qr-scanner.git",
     "react": "^16.13.1",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
